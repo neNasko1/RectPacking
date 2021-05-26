@@ -1,19 +1,27 @@
 #include "EmptyRectangleSet.h"
 #include <vector>
 #include <algorithm>
+#include <math.h>
 
 EmptyRectanglesSet::EmptyRectanglesSet() : emptyRectangles() {}
 
 EmptyRectanglesSet::EmptyRectanglesSet(const Box &_rect) : emptyRectangles() {this->emptyRectangles.push_back(_rect);}
 
+//Pushes and calculates new empty rectangles, only works for rectangles with rotations 0 - 90
 void EmptyRectanglesSet::pushBox(const Box &shape) {
+    Box shapeCopy;
+    if(std::fabs(shape.angle) <= 1e-5) {
+        shapeCopy = shape;
+    } else {
+        shapeCopy = Box(shape.x - shape.height, shape.y, shape.height, shape.width);
+    }
     std::vector<Box> newEmptyRectangles;
     for(const auto &it : this->emptyRectangles) {
-        if(areColliding(it, shape)) {
-            newEmptyRectangles.push_back(Box(it.x, it.y, shape.x - it.x, it.height));
-            newEmptyRectangles.push_back(Box(it.x, it.y, it.width, shape.y - it.y));
-            newEmptyRectangles.push_back(Box(shape.x + shape.width, it.y, it.x + it.width - shape.x - shape.width, it.height));
-            newEmptyRectangles.push_back(Box(it.x, shape.y + shape.height, it.width, it.y + it.height - shape.y - shape.height));
+        if(areCollidingAABB(it, shapeCopy)) {
+            newEmptyRectangles.push_back(Box(it.x, it.y, shapeCopy.x - it.x, it.height));
+            newEmptyRectangles.push_back(Box(it.x, it.y, it.width, shapeCopy.y - it.y));
+            newEmptyRectangles.push_back(Box(shapeCopy.x + shapeCopy.width, it.y, it.x + it.width - shapeCopy.x - shapeCopy.width, it.height));
+            newEmptyRectangles.push_back(Box(it.x, shapeCopy.y + shapeCopy.height, it.width, it.y + it.height - shapeCopy.y - shapeCopy.height));
         } else {
             newEmptyRectangles.push_back(it);
         }
@@ -28,7 +36,7 @@ void EmptyRectanglesSet::pushBox(const Box &shape) {
         if(shp.width > 0 && shp.height > 0) {
             bool flag = true;
             for(const auto &shpBigger : this->emptyRectangles) {
-                if(shpBigger.contains(shp)) {
+                if(shpBigger.containsAABB(shp)) {
                     flag = false;
                     break;
                 }
@@ -60,14 +68,23 @@ void EmptyRectanglesSet::pushEmpty(const Box &emptRect) {
 }
 
 bool EmptyRectanglesSet::findBest(const Rectangle &rect, Box &ret) {
-    int minWaste = 1e9;
+    float minWaste = 1e9;
     bool flag = false;
     for(const auto &emp : this->emptyRectangles) {
         if(emp.width >= rect.width && emp.height >= rect.height) {
-            int nowWaste = emp.width - rect.width + emp.height - rect.height;
-            if(nowWaste < minWaste) {
-                minWaste = nowWaste;
-                ret = Box(emp.x, emp.y, rect.width, rect.height);
+            float currentWaste = (emp.width - rect.width) * (emp.height) + (emp.height - rect.height) * (emp.width);
+            if(currentWaste < minWaste) {
+                minWaste = currentWaste;
+                ret = Box(emp.x, emp.y, rect.width, rect.height, 0);
+                flag = true;
+            }
+        }
+
+        if(emp.width >= rect.height && emp.height >= rect.width) {
+            float currentWaste = (emp.width - rect.height) * (emp.height) + (emp.height - rect.width) * (emp.width);
+            if(currentWaste < minWaste) {
+                minWaste = currentWaste;
+                ret = Box(emp.x + rect.height, emp.y, rect.width, rect.height, 90);
                 flag = true;
             }
         }

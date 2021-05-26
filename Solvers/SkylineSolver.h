@@ -9,6 +9,7 @@
 
 #include "../Shapes.h"
 #include "../Solvers.h"
+#include "MaxRectSolver.h"
 
 class SkylineSolver : public Solver {
 private:
@@ -22,6 +23,7 @@ private:
     std::multiset<SkylineInterval> skylineIntervalSet;
     float getLeftBorder(std::multiset<SkylineInterval>::iterator &firstIterator);
     std::multiset<SkylineInterval>::iterator findBest(const Rectangle &rect, Box &ret);
+    EmptyRectanglesSet emptySpaces;
     void pushBox(const Rectangle &rect, std::multiset<SkylineInterval>::iterator &firstIterator);
 public:
     SkylineSolver(const Rectangle &_bin);

@@ -14,24 +14,24 @@ void ShelfSolver::solve(std::vector<Rectangle> &shapesToPush, const float maxTim
         return a.height > b.height;
     });
 
-    int nowx = 0, nowy = 0;
-    int highestInRow = 0;
+    float currentx = 0, currenty = 0;
+    float highestInRow = 0;
     do {
         highestInRow = 0;
-        nowx = 0;
+        currentx = 0;
         for(auto &shp : shapesToPush) if(!shp.placed) {
-            if(highestInRow == 0 && this->bin.height - nowy < shp.height) {
+            if(highestInRow == 0 && this->bin.height - currenty < shp.height) {
                 continue;
-            } else if(this->bin.width - nowx >= shp.width) {
+            } else if(this->bin.width - currentx >= shp.width) {
                 shp.placed = true;
                 if(highestInRow == 0) {
                     highestInRow = shp.height;
                 }
-                this->packed.shapes.push_back(Box(nowx, nowy, shp));
-                nowx += shp.width;
+                this->packed.push_back(Box(currentx, currenty, shp));
+                currentx += shp.width;
             }
         }
-        nowy += highestInRow;
+        currenty += highestInRow;
     } while(highestInRow != 0);
 }
 

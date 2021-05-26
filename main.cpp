@@ -13,7 +13,9 @@
 #include <random>
 
 int main() {
-    srand(10);
+    //freopen("output.txt", "w", stdout);
+
+    srand(25);
     ShelfSolver slv(Rectangle(300, 300));
 
     int n = 1000;
@@ -27,22 +29,22 @@ int main() {
 
     std::ofstream out;
     out.open("rect.svg");
+
     slv.printToSvg(out);
-    //slv.printToSvg(std::cout);
     out.close();
     return 0;
 }
 
 /*
-TODO:
-Wedn:
-Svg
-contains arecolliding
-
 Thurs:
 time useful
 JSON11
 
 Fri:
 Quality
+
+Future
+contains for rotations
+
+
 */

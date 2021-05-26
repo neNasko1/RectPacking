@@ -34,7 +34,6 @@ void Packing::pop_back() {
 Solver::Solver(const Rectangle &_bin) : bin(_bin), packed() {}
 void Solver::printToSvg(std::ostream &out) {
     out << "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width='800' height='800' viewBox=\"0 0 600 600\">" << std::endl;
-    out << "\t<g transform=\"scale(1, 1)\">" << std::endl;
 
     this->bin.printToSvg(out);
 
@@ -42,6 +41,6 @@ void Solver::printToSvg(std::ostream &out) {
         shp.printToSvg(out);
     }
 
-    out << "\t</g>" << std::endl;
+    out << "\t<text x = \"" << 2 << "\" y = \"" << this->bin.height + 10 << "\" fill = \"red\" style=\"font-size: 4pt;\">" << this->packed.score << "from " << this->bin.getArea() << "</text>" << std::endl;
     out << "</svg>" << std::endl;
 }
