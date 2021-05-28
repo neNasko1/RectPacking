@@ -8,7 +8,7 @@
 
 namespace rectpack {
 
-MaxRectSolver::MaxRectSolver(const Rectangle &_bin) : Solver(_bin), emptySpaces(Box(0, 0, _bin))  {}
+MaxRectSolver::MaxRectSolver(const Rectangle &_bin) : Solver(_bin), emptySpaces(Box(0, 0, 0, _bin))  {}
 
 MaxRectSolver::~MaxRectSolver()  {}
 

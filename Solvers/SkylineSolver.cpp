@@ -95,7 +95,7 @@ std::multiset<SkylineSolver::SkylineInterval>::iterator SkylineSolver::findBest(
 
         if(currentWaste < minWaste && extractedMax + rect.height <= this->bin.height) {
             minWaste = currentWaste;
-            ret = Box(currentLeftBorder, extractedMax, rect.width, rect.height);
+            ret = Box(currentLeftBorder, extractedMax, 0, rect);
             retIterator = leftPointer;
         }
 

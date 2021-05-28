@@ -1,6 +1,8 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <time.h>
+#include <random>
 
 #include "../json11/json11.hpp"
 
@@ -32,14 +34,14 @@ void RectanglePacker::inputFromJSON(std::istream &in) {
     this->mask = json["Settings"]["Mask"].int_value();
     this->maxTime = json["Settings"]["MaxTime"].number_value();
 
+    int ind = 0;
     for(const auto &shp : json["Shapes"].array_items()) {
         float w = shp["W"].number_value(), h = shp["H"].number_value(); int count = shp["Count"].int_value();
+        ind ++;
         for(int i = 0; i < count; i ++) {
-            this->shapes.push_back(Rectangle(w, h));
+            this->shapes.push_back(Rectangle(w, h, ind));
         }
     }
-
-    this->outputFile = json["Outputfile"].string_value();
 
     std::cout << "Read from stream" << std::endl;
     std::cout << this->bin << " " << this->mask << " " << this->maxTime << " " << std::endl;
@@ -65,13 +67,9 @@ void RectanglePacker::execute() {
         solver.solve(this->shapes, this->maxTime);
         this->packed.compareAndSwap(solver.packed);
     }
-    this->outputToSvg();
 }
 
-void RectanglePacker::outputToSvg() {
-    std::ofstream out;
-    out.open(this->outputFile);
-
+void RectanglePacker::outputToSvg(std::ostream &out) {
     out << "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width='2000' height='2000' viewBox=\"0 0 2000 2000\">" << std::endl;
 
     this->bin.printToSvg(out);
@@ -82,8 +80,6 @@ void RectanglePacker::outputToSvg() {
 
     out << "\t<text x = \"" << 2 << "\" y = \"" << this->bin.height + 10 << "\" fill = \"red\" style=\"font-size: 4pt;\">" << this->packed.score << "from " << this->bin.getArea() << "</text>" << std::endl;
     out << "</svg>" << std::endl;
-
-    out.close();
 }
 
 };

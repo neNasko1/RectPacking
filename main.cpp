@@ -14,16 +14,18 @@
 #include <random>
 
 int main() {
-    //freopen("output.txt", "w", stdout);
-
-    std::ifstream in;
-    in.open("input.json");
-
     rectpack::RectanglePacker rp;
+
+    std::ifstream in("input.json");
     rp.inputFromJSON(in);
+    in.close();
+
     rp.execute();
 
-    in.close();
+    std::ofstream out("rect.svg");
+    rp.outputToSvg(out);
+    out.close();
+
 
     return 0;
 }

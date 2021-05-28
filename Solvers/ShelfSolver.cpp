@@ -24,7 +24,7 @@ void ShelfSolver::solveForPermutation(std::vector<Rectangle> &shapesToPush, cons
             if(this->bin.width - currentx >= shp.width && this->bin.height - currenty >= shp.height) {
                 highestInRow = std::max(highestInRow, shp.height);
                 shp.placed = true;
-                this->buffer.push_back(Box(currentx, currenty, shp));
+                this->buffer.push_back(Box(currentx, currenty, 0, shp));
                 currentx += shp.width;
             }
         }

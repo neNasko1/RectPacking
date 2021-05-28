@@ -9,7 +9,7 @@ EmptyRectanglesSet::EmptyRectanglesSet() : emptyRectangles(), fullBin() {}
 
 EmptyRectanglesSet::EmptyRectanglesSet(const Box &_rect) : emptyRectangles(), fullBin(_rect) {}
 
-//Pushes and calculates new empty rectangles, only works for rectangles with rotations 0 - 90
+//Pushes and calculates new empty rectangles, only works for rectangles with rotations 0/90
 void EmptyRectanglesSet::pushBox(const Box &shape) {
     Box shapeCopy;
     if(std::fabs(shape.angle) <= 1e-5) {
@@ -48,25 +48,10 @@ void EmptyRectanglesSet::pushBox(const Box &shape) {
             }
         }
     }
-
-#ifdef DEBUGOUTPUTS
-    std::cout << "Pushing shape" << std::endl;
-    for(const auto &emp : this->emptyRectangles) {
-        std::cout << emp << " ";
-    }
-    std::cout << std::endl;
-#endif
 }
 
 void EmptyRectanglesSet::pushEmpty(const Box &emptRect) {
     this->emptyRectangles.push_back(emptRect);
-#ifdef DEBUGOUTPUTS
-    std::cout << "Pushing empty" << std::endl;
-    for(const auto &emp : this->emptyRectangles) {
-        std::cout << emp << " ";
-    }
-    std::cout << std::endl;
-#endif
 }
 
 void EmptyRectanglesSet::clear() {
@@ -82,7 +67,7 @@ bool EmptyRectanglesSet::findBest(const Rectangle &rect, Box &ret) {
             float currentWaste = (emp.width - rect.width) * (emp.height) + (emp.height - rect.height) * (emp.width);
             if(currentWaste < minWaste) {
                 minWaste = currentWaste;
-                ret = Box(emp.x, emp.y, rect.width, rect.height, 0);
+                ret = Box(emp.x, emp.y, 0, rect);
                 flag = true;
             }
         }
@@ -91,7 +76,7 @@ bool EmptyRectanglesSet::findBest(const Rectangle &rect, Box &ret) {
             float currentWaste = (emp.width - rect.height) * (emp.height) + (emp.height - rect.width) * (emp.width);
             if(currentWaste < minWaste) {
                 minWaste = currentWaste;
-                ret = Box(emp.x + rect.height, emp.y, rect.width, rect.height, 90);
+                ret = Box(emp.x + rect.height, emp.y, 90, rect);
                 flag = true;
             }
         }

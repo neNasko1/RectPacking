@@ -15,20 +15,18 @@
 namespace rectpack {
 
 class RectanglePacker {
-private:
-    void outputToSvg();
 public:
     std::vector<Rectangle> shapes;
     Rectangle bin;
     int mask;
     float maxTime;
     Packing packed;
-    std::string outputFile;
 
     RectanglePacker(int _mask = 0, int _maxTime = 0);
     RectanglePacker(const RectanglePacker &other);
     void inputFromJSON(std::istream &in);
     void execute();
+    void outputToSvg(std::ostream &out);
 };
 
 };
