@@ -4,13 +4,13 @@
 #include <math.h>
 #include <iterator>
 
-#include "../Shapes.h"
-#include "../Solvers.h"
+#include "../Shapes/Shapes.h"
+#include "Solvers.h"
 #include "SkylineSolver.h"
 
-SkylineSolver::SkylineSolver(const Rectangle &_bin) : Solver(_bin), skylineIntervalSet(), emptySpaces() {
-    skylineIntervalSet.insert(SkylineInterval(_bin.width, 0));
-}
+namespace rectpack {
+
+SkylineSolver::SkylineSolver(const Rectangle &_bin) : Solver(_bin), skylineIntervalSet(), emptySpaces() {}
 
 SkylineSolver::~SkylineSolver() {}
 
@@ -109,29 +109,32 @@ std::multiset<SkylineSolver::SkylineInterval>::iterator SkylineSolver::findBest(
     return retIterator;
 }
 
-void SkylineSolver::solve(std::vector<Rectangle> &shapesToPush, const float maxTime) {
-    std::sort(shapesToPush.begin(), shapesToPush.end(),
-    [](const Rectangle &a, const Rectangle &b) {
-        return a.getArea() > b.getArea();
-    });
+void SkylineSolver::solveForPermutation(std::vector<Rectangle> &shapesToPush, const float maxTime) {
+    this->buffer.clear();
+    this->skylineIntervalSet.clear();
+    this->emptySpaces.clear();
+    skylineIntervalSet.insert(SkylineInterval(this->bin.width, 0));
 
-    for(auto &shp : shapesToPush) {
+    auto beginClock = clock();
+
+    for(auto &shp : shapesToPush) if(clock() - beginClock < maxTime) {
         Box shapePlace;
         auto placeIterator = this->findBest(shp, shapePlace);
         if(placeIterator != this->skylineIntervalSet.end()) {
-            this->packed.push_back(shapePlace);
+            this->buffer.push_back(shapePlace);
             this->pushBox(shapePlace, placeIterator);
             shp.placed = true;
         }
     }
 
-    for(auto &shp : shapesToPush) if(!shp.placed) {
+    for(auto &shp : shapesToPush) if(clock() - beginClock < maxTime && !shp.placed) {
         Box shapePlace;
         if(this->emptySpaces.findBest(shp, shapePlace)) {
-            this->packed.push_back(shapePlace);
+            this->buffer.push_back(shapePlace);
             this->emptySpaces.pushBox(shapePlace);
             shp.placed = true;
         }
     }
 }
 
+};

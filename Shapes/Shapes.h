@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+namespace rectpack {
+
 class Rectangle {
 public:
     float width, height;
@@ -34,5 +36,7 @@ public:
 
 std::ostream &operator <<(std::ostream &out, const Box &box);
 bool areCollidingAABB(const Box &first, const Box &second);
+
+};
 
 #endif // SHAPES_H

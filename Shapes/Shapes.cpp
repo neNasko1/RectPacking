@@ -1,5 +1,7 @@
 #include "Shapes.h"
 
+namespace rectpack {
+
 Rectangle::Rectangle(const float _width, const float _height) :
     width(_width), height(_height), placed(false) {}
 
@@ -60,3 +62,5 @@ void Box::printToSvg(std::ostream &out) const {
     out << "\t\t<text x = \"" << this->x + 2 << "\" y = \"" << this->y + 8 << "\" fill = \"red\" style=\"font-size: 4pt;\">" << this->width << "x" << this->height << "</text>" << std::endl;
     out << "\t</g>";
 }
+
+};

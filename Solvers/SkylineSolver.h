@@ -7,9 +7,11 @@
 #include <algorithm>
 #include <iterator>
 
-#include "../Shapes.h"
-#include "../Solvers.h"
+#include "../Shapes/Shapes.h"
+#include "Solvers.h"
 #include "MaxRectSolver.h"
+
+namespace rectpack {
 
 class SkylineSolver : public Solver {
 private:
@@ -25,10 +27,12 @@ private:
     std::multiset<SkylineInterval>::iterator findBest(const Rectangle &rect, Box &ret);
     EmptyRectanglesSet emptySpaces;
     void pushBox(const Rectangle &rect, std::multiset<SkylineInterval>::iterator &firstIterator);
+    void solveForPermutation(std::vector<Rectangle> &shapesToPush, const float maxTime);
 public:
     SkylineSolver(const Rectangle &_bin);
     ~SkylineSolver();
-    void solve(std::vector<Rectangle> &shapesToPush, const float maxTime);
+};
+
 };
 
 #endif

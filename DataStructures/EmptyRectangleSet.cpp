@@ -3,9 +3,11 @@
 #include <algorithm>
 #include <math.h>
 
-EmptyRectanglesSet::EmptyRectanglesSet() : emptyRectangles() {}
+namespace rectpack {
 
-EmptyRectanglesSet::EmptyRectanglesSet(const Box &_rect) : emptyRectangles() {this->emptyRectangles.push_back(_rect);}
+EmptyRectanglesSet::EmptyRectanglesSet() : emptyRectangles(), fullBin() {}
+
+EmptyRectanglesSet::EmptyRectanglesSet(const Box &_rect) : emptyRectangles(), fullBin(_rect) {}
 
 //Pushes and calculates new empty rectangles, only works for rectangles with rotations 0 - 90
 void EmptyRectanglesSet::pushBox(const Box &shape) {
@@ -67,6 +69,11 @@ void EmptyRectanglesSet::pushEmpty(const Box &emptRect) {
 #endif
 }
 
+void EmptyRectanglesSet::clear() {
+    this->emptyRectangles.resize(0);
+    this->pushEmpty(this->fullBin);
+}
+
 bool EmptyRectanglesSet::findBest(const Rectangle &rect, Box &ret) {
     float minWaste = 1e9;
     bool flag = false;
@@ -91,3 +98,5 @@ bool EmptyRectanglesSet::findBest(const Rectangle &rect, Box &ret) {
     }
     return flag;
 }
+
+};

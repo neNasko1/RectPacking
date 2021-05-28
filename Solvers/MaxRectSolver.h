@@ -3,19 +3,22 @@
 #define MAXRECT_SOLVER_H
 
 #include <vector>
-#include "../Solvers.h"
-#include "../Shapes.h"
+#include "../Shapes/Shapes.h"
+#include "Solvers.h"
+
+namespace rectpack {
 
 class MaxRectSolver : public Solver {
 private:
     EmptyRectanglesSet emptySpaces;
+    void solveForPermutation(std::vector<Rectangle> &shapesToPush, const float maxTime);
 public:
     MaxRectSolver(const Rectangle &_bin);
     ~MaxRectSolver();
     bool pushShape(const Rectangle &shapeToPush);
-    void solve(std::vector<Rectangle> &shapesToPush, const float maxTime);
 };
 
+};
 
 #endif
 
