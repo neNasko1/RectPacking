@@ -26,6 +26,7 @@ public:
     void push_back(const Box &shape);
     void pop_back();
     void clear();
+    void printToSvg(std::ostream &out);
 };
 
 class Solver {

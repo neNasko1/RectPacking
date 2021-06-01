@@ -26,12 +26,10 @@ int main() {
     rp.outputToSvg(out);
     out.close();
 
-
     return 0;
 }
 
 /*
-Make named shapes in svg - reduce file size
 Probabilistic sorter - optimizes the answers given by the algorithm
 Support for non-90degree rotations - (contains for rotations)
 */

@@ -17,6 +17,7 @@ namespace rectpack {
 RectanglePacker::RectanglePacker(int _mask, int _maxTime) : shapes(), mask(_mask), maxTime(_maxTime) {}
 RectanglePacker::RectanglePacker(const RectanglePacker &other) : shapes(other.shapes), bin(other.bin), mask(other.mask), maxTime(other.maxTime), packed(other.packed) {}
 
+//Inputs settings and different shapes from istream in json format
 void RectanglePacker::inputFromJSON(std::istream &in) {
     std::stringstream inStream;
     inStream << in.rdbuf();
@@ -51,6 +52,7 @@ void RectanglePacker::inputFromJSON(std::istream &in) {
     std::cout << std::endl;
 }
 
+//Main function which calculates the best packing
 void RectanglePacker::execute() {
     if(this->mask & 1) {
         SkylineSolver solver(this->bin);
@@ -69,14 +71,13 @@ void RectanglePacker::execute() {
     }
 }
 
+//Prints answer to ostream in svg format
 void RectanglePacker::outputToSvg(std::ostream &out) {
     out << "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width='2000' height='2000' viewBox=\"0 0 2000 2000\">" << std::endl;
 
     this->bin.printToSvg(out);
 
-    for(const auto &shp : this->packed.shapes) {
-        shp.printToSvg(out);
-    }
+    this->packed.printToSvg(out);
 
     out << "\t<text x = \"" << 2 << "\" y = \"" << this->bin.height + 10 << "\" fill = \"red\" style=\"font-size: 4pt;\">" << this->packed.score << "from " << this->bin.getArea() << "</text>" << std::endl;
     out << "</svg>" << std::endl;

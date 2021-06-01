@@ -45,6 +45,25 @@ void Packing::clear() {
     this->shapes.resize(0);
 }
 
+void Packing::printToSvg(std::ostream &out) {
+    std::set<int> used;
+    out << "\t<defs>" << std::endl;
+    for(const auto &shp : this->shapes) {
+        if(used.find(shp.data) == used.end()) {
+            out << "\t\t<g id = \"" << shp.data << "\">" << std::endl;
+            out << "\t\t\t<rect x = \"" << 0 << "\" y = \"" << 0 << "\" width=\"" << shp.width << "\" height=\"" << shp.height
+                << "\" style=\"fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)\" />" << std::endl;
+            out << "\t\t\t<text x = \"" << 2 << "\" y = \"" << 8 << "\" fill = \"red\" style=\"font-size: 4pt;\">" << shp.data << "</text>" << std::endl;
+            out << "\t\t</g>" << std::endl;
+            used.insert(shp.data);
+        }
+    }
+    out << "\t</defs>" << std::endl;
+    for(const auto &shp : this->shapes) {
+        out << "\t<use xlink:href=\"#" << shp.data << "\" transform=\"translate(" << shp.x << ", " << shp.y << ") rotate(" << shp.angle << ", " << 0 << ", " << 0 << ") \"/>" << std::endl;
+    }
+}
+
 Solver::Solver(const Rectangle &_bin) : bin(_bin), buffer(), packed() {}
 
 Solver::~Solver() {}
@@ -53,10 +72,8 @@ void Solver::printToSvg(std::ostream &out) {
     out << "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width='2000' height='2000' viewBox=\"0 0 2000 2000\">" << std::endl;
 
     this->bin.printToSvg(out);
-
-    for(const auto &shp : this->packed.shapes) {
-        shp.printToSvg(out);
-    }
+    std::cout << "Here " << std::endl;
+    this->packed.printToSvg(out);
 
     out << "\t<text x = \"" << 2 << "\" y = \"" << this->bin.height + 10 << "\" fill = \"red\" style=\"font-size: 4pt;\">" << this->packed.score << "from " << this->bin.getArea() << "</text>" << std::endl;
     out << "</svg>" << std::endl;
