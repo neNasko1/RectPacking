@@ -16,6 +16,8 @@ Rectangle Rectangle::flip() const {
     return Rectangle(this->height, this->width);
 }
 
+Rectangle::~Rectangle() {}
+
 std::ostream &operator <<(std::ostream &out, const Rectangle &rect) {
     out << "[" << rect.width << " " << rect.height << " " << rect.placed << " " << rect.data << "]";
     return out;
@@ -26,12 +28,10 @@ void Rectangle::printToSvg(std::ostream &out) const {
         << "\" style=\"fill:rgb(255, 255, 255);stroke-width:1;stroke:rgb(0, 0, 0)\" />" << std::endl;
 }
 
-Rectangle::~Rectangle() {}
-
 Box::Box(const float _x, const float _y, const float _width, const float _height, const float _angle, const int _data) :
     Rectangle(_width, _height, _data), x(_x), y(_y), angle(_angle) {}
 
-Box::Box(const float _x, const float _y, const float _angle, const Rectangle &_rect) :
+Box::Box(const float _x, const float _y, const Rectangle &_rect, const float _angle) :
     Rectangle(_rect), x(_x), y(_y), angle(_angle) {}
 
 Box::Box(const Box &other) :
@@ -58,8 +58,7 @@ bool areCollidingAABB(const Box &first, const Box &second) {
 void Box::printToSvg(std::ostream &out) const {
     out << "\t<g transform = \"rotate(" << this->angle << ", " << this->x << ", " << this->y << ")\">" << std::endl;
     out << "\t\t<rect x = \"" << this->x << "\" y = \"" << this->y << "\" width=\"" << this->width << "\" height=\"" << this->height
-        << "\" style=\"fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)\" />" << std::endl;
-    out << "\t\t<text x = \"" << this->x + 2 << "\" y = \"" << this->y + 8 << "\" fill = \"red\" style=\"font-size: 4pt;\">" << this->data << "</text>" << std::endl;
+        << "\" style=\"fill:rgb(255, 255, 210, 255);stroke-width:0.3;stroke:rgb(0, 255, 0)\" />" << std::endl;
     out << "\t</g>";
 }
 

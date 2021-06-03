@@ -20,9 +20,10 @@ public:
     Rectangle bin;
     int mask;
     float maxTime;
+    int seed;
     Packing packed;
 
-    RectanglePacker(int _mask = 0, int _maxTime = 0);
+    RectanglePacker(int _mask = 0, float _maxTime = 0, int _seed = 0);
     RectanglePacker(const RectanglePacker &other);
     void inputFromJSON(std::istream &in);
     void execute();

@@ -12,11 +12,11 @@ namespace rectpack {
 
 SkylineSolver::SkylineSolver(const Rectangle &_bin) : Solver(_bin), skylineIntervalSet(), emptySpaces() {}
 
-SkylineSolver::~SkylineSolver() {}
-
 SkylineSolver::SkylineInterval::SkylineInterval() : rightBorder(0), height(0) {}
 
 SkylineSolver::SkylineInterval::SkylineInterval(const float _rightBorder, const float _height) : rightBorder(_rightBorder), height(_height) {}
+
+SkylineSolver::~SkylineSolver() {}
 
 bool SkylineSolver::SkylineInterval::operator <(const SkylineInterval &other) const {
     return this->rightBorder < other.rightBorder;
@@ -95,7 +95,7 @@ std::multiset<SkylineSolver::SkylineInterval>::iterator SkylineSolver::findBest(
 
         if(currentWaste < minWaste && extractedMax + rect.height <= this->bin.height) {
             minWaste = currentWaste;
-            ret = Box(currentLeftBorder, extractedMax, 0, rect);
+            ret = Box(currentLeftBorder, extractedMax, rect, 0);
             retIterator = leftPointer;
         }
 
@@ -132,6 +132,15 @@ void SkylineSolver::solveForPermutation(std::vector<Rectangle> &shapesToPush, co
         if(this->emptySpaces.findBest(shp, shapePlace)) {
             this->buffer.push_back(shapePlace);
             this->emptySpaces.pushBox(shapePlace);
+            shp.placed = true;
+        }
+    }
+
+    for(auto &shp : shapesToPush) if(clock() - beginClock < maxTime && !shp.placed) {
+        Box shapePlace, boundingBox;
+        if(this->emptySpaces.findBestRotation(shp, shapePlace, boundingBox)) {
+            this->buffer.push_back(shapePlace);
+            this->emptySpaces.pushBox(boundingBox);
             shp.placed = true;
         }
     }

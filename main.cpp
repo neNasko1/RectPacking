@@ -31,5 +31,4 @@ int main() {
 
 /*
 Probabilistic sorter - optimizes the answers given by the algorithm
-Support for non-90degree rotations - (contains for rotations)
 */

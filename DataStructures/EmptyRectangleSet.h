@@ -14,10 +14,12 @@ private:
 public:
     EmptyRectanglesSet();
     EmptyRectanglesSet(const Box &_rect);
+    ~EmptyRectanglesSet();
     void clear();
-    void   pushBox (const Box &shape);
-    void pushEmpty (const Box &emptRect);
-    bool  findBest (const Rectangle &rect, Box &ret);
+    void  pushBox   (const Box &shape);
+    void  pushEmpty (const Box &emptRect);
+    bool  findBest   (const Rectangle &rect, Box &ret);
+    bool  findBestRotation(const Rectangle &rect, Box &ret, Box &boundingBox);
 };
 
 };

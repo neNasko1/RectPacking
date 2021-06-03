@@ -14,8 +14,8 @@
 
 namespace rectpack {
 
-RectanglePacker::RectanglePacker(int _mask, int _maxTime) : shapes(), mask(_mask), maxTime(_maxTime) {}
-RectanglePacker::RectanglePacker(const RectanglePacker &other) : shapes(other.shapes), bin(other.bin), mask(other.mask), maxTime(other.maxTime), packed(other.packed) {}
+RectanglePacker::RectanglePacker(int _mask, float _maxTime, int _seed) : shapes(), mask(_mask), maxTime(_maxTime), seed(_seed) {}
+RectanglePacker::RectanglePacker(const RectanglePacker &other) : shapes(other.shapes), bin(other.bin), mask(other.mask), maxTime(other.maxTime), seed(other.seed), packed(other.packed) {}
 
 //Inputs settings and different shapes from istream in json format
 void RectanglePacker::inputFromJSON(std::istream &in) {
@@ -34,6 +34,7 @@ void RectanglePacker::inputFromJSON(std::istream &in) {
     this->bin = Rectangle(json["Bin"]["W"].number_value(), json["Bin"]["H"].number_value());
     this->mask = json["Settings"]["Mask"].int_value();
     this->maxTime = json["Settings"]["MaxTime"].number_value();
+    this->seed = json["Settings"]["Seed"].int_value();
 
     int ind = 0;
     for(const auto &shp : json["Shapes"].array_items()) {
@@ -54,6 +55,7 @@ void RectanglePacker::inputFromJSON(std::istream &in) {
 
 //Main function which calculates the best packing
 void RectanglePacker::execute() {
+    srand(this->seed);
     if(this->mask & 1) {
         SkylineSolver solver(this->bin);
         solver.solve(this->shapes, this->maxTime);

@@ -8,7 +8,7 @@
 
 namespace rectpack {
 
-MaxRectSolver::MaxRectSolver(const Rectangle &_bin) : Solver(_bin), emptySpaces(Box(0, 0, 0, _bin))  {}
+MaxRectSolver::MaxRectSolver(const Rectangle &_bin) : Solver(_bin), emptySpaces(Box(0, 0, _bin, 0))  {}
 
 MaxRectSolver::~MaxRectSolver()  {}
 
@@ -23,6 +23,15 @@ void MaxRectSolver::solveForPermutation(std::vector<Rectangle> &shapesToPush, co
         if(this->emptySpaces.findBest(shp, shapePlace)) {
             this->buffer.push_back(shapePlace);
             this->emptySpaces.pushBox(shapePlace);
+            shp.placed = true;
+        }
+    }
+
+    for(auto &shp : shapesToPush) if(clock() - beginClock < maxTime && !shp.placed) {
+        Box shapePlace, boundingBox;
+        if(this->emptySpaces.findBestRotation(shp, shapePlace, boundingBox)) {
+            this->buffer.push_back(shapePlace);
+            this->emptySpaces.pushBox(boundingBox);
             shp.placed = true;
         }
     }

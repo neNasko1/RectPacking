@@ -52,8 +52,7 @@ void Packing::printToSvg(std::ostream &out) {
         if(used.find(shp.data) == used.end()) {
             out << "\t\t<g id = \"" << shp.data << "\">" << std::endl;
             out << "\t\t\t<rect x = \"" << 0 << "\" y = \"" << 0 << "\" width=\"" << shp.width << "\" height=\"" << shp.height
-                << "\" style=\"fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)\" />" << std::endl;
-            out << "\t\t\t<text x = \"" << 2 << "\" y = \"" << 8 << "\" fill = \"red\" style=\"font-size: 4pt;\">" << shp.data << "</text>" << std::endl;
+                << "\" style=\"fill:rgb(255, 255, 210, 255);stroke-width:0.3;stroke:rgb(0, 255, 0)\" />" << std::endl;
             out << "\t\t</g>" << std::endl;
             used.insert(shp.data);
         }

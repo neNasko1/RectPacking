@@ -1,0 +1,5 @@
+{
+	"Bin":{"W":200, "H":200},
+	"Shapes":[{"W":35, "H":220, "Count":10}, {"W":15, "H":15, "Count":25}],
+	"Settings":{"Mask":7, "MaxTime":3000, "Seed":1231}
+}

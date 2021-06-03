@@ -1,5 +1,6 @@
 #include "EmptyRectangleSet.h"
 #include <vector>
+#include <utility>
 #include <algorithm>
 #include <math.h>
 
@@ -8,6 +9,8 @@ namespace rectpack {
 EmptyRectanglesSet::EmptyRectanglesSet() : emptyRectangles(), fullBin() {}
 
 EmptyRectanglesSet::EmptyRectanglesSet(const Box &_rect) : emptyRectangles(), fullBin(_rect) {}
+
+EmptyRectanglesSet::~EmptyRectanglesSet() {}
 
 //Pushes and calculates new empty rectangles, only works for rectangles with rotations 0/90
 void EmptyRectanglesSet::pushBox(const Box &shape) {
@@ -67,7 +70,7 @@ bool EmptyRectanglesSet::findBest(const Rectangle &rect, Box &ret) {
             float currentWaste = (emp.width - rect.width) * (emp.height) + (emp.height - rect.height) * (emp.width);
             if(currentWaste < minWaste) {
                 minWaste = currentWaste;
-                ret = Box(emp.x, emp.y, 0, rect);
+                ret = Box(emp.x, emp.y, rect, 0);
                 flag = true;
             }
         }
@@ -76,7 +79,36 @@ bool EmptyRectanglesSet::findBest(const Rectangle &rect, Box &ret) {
             float currentWaste = (emp.width - rect.height) * (emp.height) + (emp.height - rect.width) * (emp.width);
             if(currentWaste < minWaste) {
                 minWaste = currentWaste;
-                ret = Box(emp.x + rect.height, emp.y, 90, rect);
+                ret = Box(emp.x + rect.height, emp.y, rect, 90);
+                flag = true;
+            }
+        }
+    }
+    return flag;
+}
+
+bool EmptyRectanglesSet::findBestRotation(const Rectangle &rect, Box &ret, Box &boundingBox) {
+    const float INCREMENT = 0.01, PI = 3.14159265;
+    float minWaste = 1e9;
+    bool flag = false;
+    for(float angle = 0; angle < PI * 2; angle += INCREMENT) {
+
+        float transformWidthxDelta = rect.width * cos(angle), transformWidthyDelta = rect.width * sin(angle);
+        float transformHeightxDelta = rect.height * cos(angle + PI / 2.), transformHeightyDelta = rect.height * sin(angle + PI / 2.);
+
+        float AABBleftx  = std::min(std::min(0.f, transformWidthxDelta), std::min(transformHeightxDelta, transformWidthxDelta + transformHeightxDelta));
+        float AABBrightx = std::max(std::max(0.f, transformWidthxDelta), std::max(transformHeightxDelta, transformWidthxDelta + transformHeightxDelta));
+        float AABBdowny  = std::min(std::min(0.f, transformWidthyDelta), std::min(transformHeightyDelta, transformWidthyDelta + transformHeightyDelta));
+        float AABBupy    = std::max(std::max(0.f, transformWidthyDelta), std::max(transformHeightyDelta, transformWidthyDelta + transformHeightyDelta));
+
+        Rectangle transformRect(AABBrightx - AABBleftx, AABBupy - AABBdowny);
+        Box nowRet;
+        if(this->findBest(transformRect, nowRet)) {
+            float currentWaste = transformRect.getArea() - rect.getArea();
+            if(minWaste > currentWaste) {
+                minWaste = currentWaste;
+                boundingBox = nowRet;
+                ret = Box(nowRet.x - AABBleftx, nowRet.y - AABBdowny, rect, angle * 360.f / (PI * 2.f));
                 flag = true;
             }
         }

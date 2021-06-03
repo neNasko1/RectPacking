@@ -28,7 +28,7 @@ public:
     float angle;
 
     Box(const float _x = 0, const float _y = 0, const float _width = 0, const float _height = 0, const float _angle = 0, const int _data = -1);
-    Box(const float _x, const float _y, const float _angle, const Rectangle &_rect);
+    Box(const float _x, const float _y, const Rectangle &_rect, const float _angle = 0);
     Box(const Box &other);
     ~Box();
     bool containsAABB(const Box &other) const;
