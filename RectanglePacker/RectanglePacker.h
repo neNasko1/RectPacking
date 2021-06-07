@@ -25,6 +25,7 @@ public:
 
     RectanglePacker(int _mask = 0, float _maxTime = 0, int _seed = 0);
     RectanglePacker(const RectanglePacker &other);
+    ~RectanglePacker();
     void inputFromJSON(std::istream &in);
     void execute();
     void outputToSvg(std::ostream &out);

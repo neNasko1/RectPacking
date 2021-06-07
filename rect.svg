@@ -1,58 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width='2000' height='2000' viewBox="0 0 2000 2000">
-	<rect width="250" height="150" style="fill:rgb(255, 255, 255);stroke-width:1;stroke:rgb(0, 0, 0)" />
-	<g transform = "rotate(90, 70, 0)">
-		<rect x = "70" y = "0" width="100" height="70" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "72" y = "8" fill = "red" style="font-size: 4pt;">1</text>
-	</g>	<g transform = "rotate(0, 0, 100)">
-		<rect x = "0" y = "100" width="110" height="25" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "2" y = "108" fill = "red" style="font-size: 4pt;">3</text>
-	</g>	<g transform = "rotate(90, 140, 0)">
-		<rect x = "140" y = "0" width="100" height="70" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "142" y = "8" fill = "red" style="font-size: 4pt;">1</text>
-	</g>	<g transform = "rotate(0, 0, 125)">
-		<rect x = "0" y = "125" width="110" height="25" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "2" y = "133" fill = "red" style="font-size: 4pt;">3</text>
-	</g>	<g transform = "rotate(90, 170, 100)">
-		<rect x = "170" y = "100" width="10" height="60" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "172" y = "108" fill = "red" style="font-size: 4pt;">2</text>
-	</g>	<g transform = "rotate(90, 170, 110)">
-		<rect x = "170" y = "110" width="10" height="60" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "172" y = "118" fill = "red" style="font-size: 4pt;">2</text>
-	</g>	<g transform = "rotate(90, 170, 120)">
-		<rect x = "170" y = "120" width="10" height="60" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "172" y = "128" fill = "red" style="font-size: 4pt;">2</text>
-	</g>	<g transform = "rotate(0, 140, 0)">
-		<rect x = "140" y = "0" width="110" height="25" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "142" y = "8" fill = "red" style="font-size: 4pt;">3</text>
-	</g>	<g transform = "rotate(0, 140, 25)">
-		<rect x = "140" y = "25" width="110" height="25" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "142" y = "33" fill = "red" style="font-size: 4pt;">3</text>
-	</g>	<g transform = "rotate(0, 140, 50)">
-		<rect x = "140" y = "50" width="110" height="25" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "142" y = "58" fill = "red" style="font-size: 4pt;">3</text>
-	</g>	<g transform = "rotate(0, 140, 75)">
-		<rect x = "140" y = "75" width="110" height="25" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "142" y = "83" fill = "red" style="font-size: 4pt;">3</text>
-	</g>	<g transform = "rotate(90, 170, 130)">
-		<rect x = "170" y = "130" width="10" height="60" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "172" y = "138" fill = "red" style="font-size: 4pt;">2</text>
-	</g>	<g transform = "rotate(90, 170, 140)">
-		<rect x = "170" y = "140" width="10" height="60" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "172" y = "148" fill = "red" style="font-size: 4pt;">2</text>
-	</g>	<g transform = "rotate(90, 230, 100)">
-		<rect x = "230" y = "100" width="10" height="60" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "232" y = "108" fill = "red" style="font-size: 4pt;">2</text>
-	</g>	<g transform = "rotate(90, 230, 110)">
-		<rect x = "230" y = "110" width="10" height="60" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "232" y = "118" fill = "red" style="font-size: 4pt;">2</text>
-	</g>	<g transform = "rotate(90, 230, 120)">
-		<rect x = "230" y = "120" width="10" height="60" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "232" y = "128" fill = "red" style="font-size: 4pt;">2</text>
-	</g>	<g transform = "rotate(90, 230, 130)">
-		<rect x = "230" y = "130" width="10" height="60" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "232" y = "138" fill = "red" style="font-size: 4pt;">2</text>
-	</g>	<g transform = "rotate(90, 230, 140)">
-		<rect x = "230" y = "140" width="10" height="60" style="fill:rgb(255, 255, 255, 0);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
-		<text x = "232" y = "148" fill = "red" style="font-size: 4pt;">2</text>
-	</g>	<text x = "2" y = "160" fill = "red" style="font-size: 4pt;">36500from 37500</text>
+	<rect width="200" height="200" style="fill:rgb(255, 255, 255);stroke-width:1;stroke:rgb(0, 0, 0)" />
+	<defs>
+		<g id = "2">
+			<rect x = "0" y = "0" width="15" height="15" style="fill:rgb(255, 255, 210, 255);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
+		</g>
+		<g id = "1">
+			<rect x = "0" y = "0" width="35" height="220" style="fill:rgb(255, 255, 210, 255);stroke-width:0.3;stroke:rgb(0, 255, 0)" />
+		</g>
+	</defs>
+	<use xlink:href="#2" transform="translate(0, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(15, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(30, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(45, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(60, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(75, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(90, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(105, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(120, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(135, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(150, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(165, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(180, 0) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 15) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 30) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 45) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 60) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 75) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 90) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 105) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 120) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 135) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 150) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 165) rotate(0, 0, 0) "/>
+	<use xlink:href="#2" transform="translate(0, 180) rotate(0, 0, 0) "/>
+	<use xlink:href="#1" transform="translate(199.928, 164.832) rotate(132.926, 0, 0) "/>
+	<text x = "2" y = "210" fill = "red" style="font-size: 4pt;">13325from 40000</text>
 </svg>

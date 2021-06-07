@@ -17,6 +17,8 @@ namespace rectpack {
 RectanglePacker::RectanglePacker(int _mask, float _maxTime, int _seed) : shapes(), mask(_mask), maxTime(_maxTime), seed(_seed) {}
 RectanglePacker::RectanglePacker(const RectanglePacker &other) : shapes(other.shapes), bin(other.bin), mask(other.mask), maxTime(other.maxTime), seed(other.seed), packed(other.packed) {}
 
+RectanglePacker::~RectanglePacker() {}
+
 //Inputs settings and different shapes from istream in json format
 void RectanglePacker::inputFromJSON(std::istream &in) {
     std::stringstream inStream;
