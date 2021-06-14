@@ -2,6 +2,7 @@
 #include <vector>
 #include <time.h>
 #include <algorithm>
+#include <fstream>
 #include <set>
 
 #include "../Shapes/Shapes.h"
@@ -78,22 +79,24 @@ void Solver::printToSvg(std::ostream &out) {
     out << "</svg>" << std::endl;
 }
 
-void Solver::solve(const std::vector<Rectangle> &shapesToPush, const float maxTime) {
-    auto copyShapesToPush = shapesToPush;
+void Solver::solve(const std::vector<Rectangle> &shapesToSolveFor, const float maxTime) {
+    auto copyShapesToSolveFor = shapesToSolveFor;
 
     auto beginClock = clock();
-    std::sort(copyShapesToPush.begin(), copyShapesToPush.end(),
+    // Sorts rectangles according to some heuristic.
+    std::sort(copyShapesToSolveFor.begin(), copyShapesToSolveFor.end(),
     [](const Rectangle &a, const Rectangle &b) {
         return a.getArea() > b.getArea();
     });
 
+    // Shuffles until there is no time left
     while(maxTime - (clock() - beginClock) > 0) {
-        this->solveForPermutation(copyShapesToPush, maxTime - (clock() - beginClock));
+        this->solveForPermutation(copyShapesToSolveFor, maxTime - (clock() - beginClock));
         if(this->packed.compareAndSwap(this->buffer)) {
             std::cout << this->packed.score << std::endl;
         }
-        random_shuffle(copyShapesToPush.begin(), copyShapesToPush.end());
-        for(auto &toReset : copyShapesToPush) {
+        random_shuffle(copyShapesToSolveFor.begin(), copyShapesToSolveFor.end());
+        for(auto &toReset : copyShapesToSolveFor) {
             toReset.placed = false;
         }
     }

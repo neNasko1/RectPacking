@@ -10,7 +10,7 @@
 
 namespace rectpack {
 
-SkylineSolver::SkylineSolver(const Rectangle &_bin) : Solver(_bin), skylineIntervalSet(), emptySpaces() {}
+SkylineSolver::SkylineSolver(const Rectangle &_bin) : Solver(_bin), skylineIntervalSet(), emptySpacesSet() {}
 
 SkylineSolver::SkylineInterval::SkylineInterval() : rightBorder(0), height(0) {}
 
@@ -34,36 +34,39 @@ float SkylineSolver::getLeftBorder(std::multiset<SkylineInterval>::iterator &fir
     return leftBorder;
 }
 
-void SkylineSolver::pushBox(const Rectangle &rect, std::multiset<SkylineInterval>::iterator &firstIterator) {
-    float leftBorder = this->getLeftBorder(firstIterator);
+void SkylineSolver::pushBox(const Rectangle &rect, std::multiset<SkylineInterval>::iterator &bestIntervalIterator) {
+    float leftBorder = this->getLeftBorder(bestIntervalIterator);
     float height = 0, currentLeftBorder = leftBorder;
 
-    std::vector<Box> fakeEmptyBoxes; //Doesn't represent actual empty places, but an abstract box with negative height, so we can figure out the real height in the end
+    // Doesn't represent actual empty spaces, but an abstract box with negative height, so we can figure out the real height in the end
+    std::vector<Box> fakeEmptySpaces;
 
-    for(auto iter = firstIterator; iter != this->skylineIntervalSet.end();) {
+    for(auto iter = bestIntervalIterator; iter != this->skylineIntervalSet.end();) {
         height = std::max(height, iter->height);
-
         if(iter->rightBorder <= leftBorder + rect.width) {
             auto copyIter = iter;
-            fakeEmptyBoxes.push_back(Box(currentLeftBorder, iter->height, iter->rightBorder - currentLeftBorder, -iter->height)); //Important - box is not real
-            bool equalityBreak = std::fabs(iter->rightBorder - leftBorder - rect.width) <= 1e-5;
+            fakeEmptySpaces.push_back(Box(currentLeftBorder, iter->height, iter->rightBorder - currentLeftBorder, -iter->height)); // Important - box is not real
+            bool equalityBreak = std::fabs(iter->rightBorder - leftBorder - rect.width) <= 1e-3; // If current rightBorder is the same as the rightBorder of iter we should break out.
 
+            // Erase iter's interval from the skylineIntervalSet and move it to the right.
             currentLeftBorder = iter->rightBorder;
             iter ++;
-
             this->skylineIntervalSet.erase(copyIter);
+
             if(equalityBreak) {
                 break;
             }
         } else {
-            fakeEmptyBoxes.push_back(Box(currentLeftBorder, iter->height, leftBorder + rect.width - currentLeftBorder, -iter->height)); //Important - box is not real
+            // Last interval under the pushed box.
+            fakeEmptySpaces.push_back(Box(currentLeftBorder, iter->height, leftBorder + rect.width - currentLeftBorder, -iter->height)); // Important - box is not real
             break;
         }
     }
 
-    for(auto &emptyBox : fakeEmptyBoxes) {
-        emptyBox.height += height;
-        this->emptySpaces.pushEmpty(emptyBox);
+    // Fix the emptyPlaces
+    for(auto &emptySpace : fakeEmptySpaces) {
+        emptySpace.height += height;
+        this->emptySpacesSet.pushEmpty(emptySpace);
     }
 
     this->skylineIntervalSet.insert(SkylineInterval(leftBorder + rect.width, height + rect.height));
@@ -79,28 +82,37 @@ std::multiset<SkylineSolver::SkylineInterval>::iterator SkylineSolver::findBest(
     float minWaste = 1e9;
     auto retIterator = this->skylineIntervalSet.end();
 
+    // Finds out which intervals are going to be under a rectangle if you put its left border to be the same as the left border of leftPointer.
+    // using a 2-pointer approach. rightPointer is moved accordingly.
+
     while(leftPointer != this->skylineIntervalSet.end() && currentLeftBorder + rect.width <= this->bin.width) {
+        // Moving rightPointer accordingly.
         while(rightPointer->rightBorder < currentLeftBorder + rect.width) {
             float rightPointerLeftBorder = rightPointer->rightBorder;
-
             rightPointer ++;
             if(rightPointer == this->skylineIntervalSet.end()) {break;}
             heights.insert(rightPointer->height);
 
-            heightSum += rightPointer->height * (rightPointer->rightBorder - rightPointerLeftBorder); //Heightsum counts up a rough estimate of the area under the rectangle,
+            //Heightsum is a part of the calculated currentWaste.
+            heightSum += rightPointer->height * (rightPointer->rightBorder - rightPointerLeftBorder);
         }
+        // If the rectangle is going to be outside of the bin break out.
         if(rightPointer == this->skylineIntervalSet.end()) {break;}
 
-        float extractedMax = *(heights.rbegin()), currentWaste = extractedMax * (rightPointer->rightBorder - currentLeftBorder) - heightSum; //Current waste is a rough estimate of the wasted area by this choice
+        // Finds out the height of the highest interval between leftPointer and rightPointer.
+        float extractedMax = *(heights.rbegin());
+        // Current waste is a rough estimate of the wasted area by this choice
+        float currentWaste = extractedMax * (rightPointer->rightBorder - currentLeftBorder) - heightSum;
 
+        // If currentWaste is smaller than minWaste change return value.
         if(currentWaste < minWaste && extractedMax + rect.height <= this->bin.height) {
             minWaste = currentWaste;
             ret = Box(currentLeftBorder, extractedMax, rect, 0);
             retIterator = leftPointer;
         }
 
+        // Moves leftPointer.
         heightSum -= leftPointer->height * (leftPointer->rightBorder - currentLeftBorder);
-
         heights.erase(heights.find(leftPointer->height));
         currentLeftBorder = leftPointer->rightBorder;
         leftPointer ++;
@@ -109,15 +121,17 @@ std::multiset<SkylineSolver::SkylineInterval>::iterator SkylineSolver::findBest(
     return retIterator;
 }
 
-void SkylineSolver::solveForPermutation(std::vector<Rectangle> &shapesToPush, const float maxTime) {
+void SkylineSolver::solveForPermutation(std::vector<Rectangle> &shapesToSolveFor, const float maxTime) {
+    // Reset the solver to the initial conditions.
     this->buffer.clear();
     this->skylineIntervalSet.clear();
-    this->emptySpaces.clear();
-    skylineIntervalSet.insert(SkylineInterval(this->bin.width, 0));
-
+    this->emptySpacesSet.clear();
     auto beginClock = clock();
 
-    for(auto &shp : shapesToPush) if(clock() - beginClock < maxTime) {
+    skylineIntervalSet.insert(SkylineInterval(this->bin.width, 0));
+
+    // Search for a place to put each rectangle on - only using the upper hull.
+    for(auto &shp : shapesToSolveFor) if(clock() - beginClock < maxTime) {
         Box shapePlace;
         auto placeIterator = this->findBest(shp, shapePlace);
         if(placeIterator != this->skylineIntervalSet.end()) {
@@ -127,20 +141,22 @@ void SkylineSolver::solveForPermutation(std::vector<Rectangle> &shapesToPush, co
         }
     }
 
-    for(auto &shp : shapesToPush) if(clock() - beginClock < maxTime && !shp.placed) {
+    // Search for a place to put each rectangle on - only using the empty spaces in emptySpacesSet.
+    for(auto &shp : shapesToSolveFor) if(clock() - beginClock < maxTime && !shp.placed) {
         Box shapePlace;
-        if(this->emptySpaces.findBest(shp, shapePlace)) {
+        if(this->emptySpacesSet.findBest(shp, shapePlace)) {
             this->buffer.push_back(shapePlace);
-            this->emptySpaces.pushBox(shapePlace);
+            this->emptySpacesSet.pushBox(shapePlace);
             shp.placed = true;
         }
     }
 
-    for(auto &shp : shapesToPush) if(clock() - beginClock < maxTime && !shp.placed) {
+    // Search for a place to put each rectangle on(using rotations) - only using the empty spaces in emptySpacesSet.
+    for(auto &shp : shapesToSolveFor) if(clock() - beginClock < maxTime && !shp.placed) {
         Box shapePlace, boundingBox;
-        if(this->emptySpaces.findBestRotation(shp, shapePlace, boundingBox)) {
+        if(this->emptySpacesSet.findBestRotation(shp, shapePlace, boundingBox)) {
             this->buffer.push_back(shapePlace);
-            this->emptySpaces.pushBox(boundingBox);
+            this->emptySpacesSet.pushBox(boundingBox);
             shp.placed = true;
         }
     }

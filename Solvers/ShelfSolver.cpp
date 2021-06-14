@@ -10,8 +10,10 @@ ShelfSolver::ShelfSolver(const Rectangle &_bin) : Solver(_bin) {}
 
 ShelfSolver::~ShelfSolver() {}
 
-void ShelfSolver::solveForPermutation(std::vector<Rectangle> &shapesToPush, const float maxTime) {
+void ShelfSolver::solveForPermutation(std::vector<Rectangle> &shapesToSolveFor, const float maxTime) {
     this->buffer.clear();
+
+    // Pushes rectangles row by row.
 
     float currentx = 0, currenty = 0;
     float highestInRow = 0;
@@ -20,7 +22,7 @@ void ShelfSolver::solveForPermutation(std::vector<Rectangle> &shapesToPush, cons
     do {
         highestInRow = 0;
         currentx = 0;
-        for(auto &shp : shapesToPush) if(!shp.placed && clock() - beginClock < maxTime) {
+        for(auto &shp : shapesToSolveFor) if(!shp.placed && clock() - beginClock < maxTime) {
             if(this->bin.width - currentx >= shp.width && this->bin.height - currenty >= shp.height) {
                 highestInRow = std::max(highestInRow, shp.height);
                 shp.placed = true;

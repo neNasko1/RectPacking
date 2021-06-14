@@ -59,16 +59,19 @@ void RectanglePacker::inputFromJSON(std::istream &in) {
 void RectanglePacker::execute() {
     srand(this->seed);
     if(this->mask & 1) {
+        std::cout << "Started skyline solver " << std::endl;
         SkylineSolver solver(this->bin);
         solver.solve(this->shapes, this->maxTime);
         this->packed.compareAndSwap(solver.packed);
     }
     if(this->mask & 2) {
+        std::cout << "Started maxrect solver " << std::endl;
         MaxRectSolver solver(this->bin);
         solver.solve(this->shapes, this->maxTime);
         this->packed.compareAndSwap(solver.packed);
     }
     if(this->mask & 4) {
+        std::cout << "Started shelf solver " << std::endl;
         ShelfSolver solver(this->bin);
         solver.solve(this->shapes, this->maxTime);
         this->packed.compareAndSwap(solver.packed);

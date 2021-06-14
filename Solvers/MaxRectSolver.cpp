@@ -8,30 +8,32 @@
 
 namespace rectpack {
 
-MaxRectSolver::MaxRectSolver(const Rectangle &_bin) : Solver(_bin), emptySpaces(Box(0, 0, _bin, 0))  {}
+MaxRectSolver::MaxRectSolver(const Rectangle &_bin) : Solver(_bin), emptySpacesSet(Box(0, 0, _bin, 0))  {}
 
 MaxRectSolver::~MaxRectSolver()  {}
 
-void MaxRectSolver::solveForPermutation(std::vector<Rectangle> &shapesToPush, const float maxTime) {
+void MaxRectSolver::solveForPermutation(std::vector<Rectangle> &shapesToSolveFor, const float maxTime) {
     this->buffer.clear();
-    this->emptySpaces.clear();
+    this->emptySpacesSet.clear();
 
     auto beginClock = clock();
 
-    for(auto &shp : shapesToPush) if(clock() - beginClock < maxTime) {
+    // Search for a place to put each rectangle on - only using the empty spaces in emptySpacesSet.
+    for(auto &shp : shapesToSolveFor) if(clock() - beginClock < maxTime) {
         Box shapePlace;
-        if(this->emptySpaces.findBest(shp, shapePlace)) {
+        if(this->emptySpacesSet.findBest(shp, shapePlace)) {
             this->buffer.push_back(shapePlace);
-            this->emptySpaces.pushBox(shapePlace);
+            this->emptySpacesSet.pushBox(shapePlace);
             shp.placed = true;
         }
     }
 
-    for(auto &shp : shapesToPush) if(clock() - beginClock < maxTime && !shp.placed) {
+    // Search for a place to put each rectangle on(using rotations) - only using the empty spaces in emptySpacesSet.
+    for(auto &shp : shapesToSolveFor) if(clock() - beginClock < maxTime && !shp.placed) {
         Box shapePlace, boundingBox;
-        if(this->emptySpaces.findBestRotation(shp, shapePlace, boundingBox)) {
+        if(this->emptySpacesSet.findBestRotation(shp, shapePlace, boundingBox)) {
             this->buffer.push_back(shapePlace);
-            this->emptySpaces.pushBox(boundingBox);
+            this->emptySpacesSet.pushBox(boundingBox);
             shp.placed = true;
         }
     }
