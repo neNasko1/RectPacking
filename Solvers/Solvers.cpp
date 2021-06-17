@@ -7,6 +7,7 @@
 
 #include "../Shapes/Shapes.h"
 #include "../DataStructures/EmptyRectangleSet.h"
+#include "../DataStructures/RandomSorter.tpp"
 #include "Solvers.h"
 
 namespace rectpack {
@@ -79,23 +80,21 @@ void Solver::printToSvg(std::ostream &out) {
     out << "</svg>" << std::endl;
 }
 
-void Solver::solve(const std::vector<Rectangle> &shapesToSolveFor, const float maxTime) {
+void Solver::solve(const std::vector<Rectangle> &shapesToSolveFor, const float maxTime, int (*evaluator)(const Rectangle &)) {
     auto copyShapesToSolveFor = shapesToSolveFor;
-
     auto beginClock = clock();
-    // Sorts rectangles according to some heuristic.
-    std::sort(copyShapesToSolveFor.begin(), copyShapesToSolveFor.end(),
-    [](const Rectangle &a, const Rectangle &b) {
-        return a.getArea() > b.getArea();
-    });
 
     // Shuffles until there is no time left
     while(maxTime - (clock() - beginClock) > 0) {
+        randomSort(copyShapesToSolveFor.begin(), copyShapesToSolveFor.end(), evaluator);
+        // We want the biggest to be picked first.
+        reverse(copyShapesToSolveFor.begin(), copyShapesToSolveFor.end());
+
         this->solveForPermutation(copyShapesToSolveFor, maxTime - (clock() - beginClock));
         if(this->packed.compareAndSwap(this->buffer)) {
             std::cout << this->packed.score << std::endl;
         }
-        random_shuffle(copyShapesToSolveFor.begin(), copyShapesToSolveFor.end());
+
         for(auto &toReset : copyShapesToSolveFor) {
             toReset.placed = false;
         }

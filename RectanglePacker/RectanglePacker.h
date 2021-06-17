@@ -8,6 +8,7 @@
 #include "../json11/json11.hpp"
 
 #include "../Solvers/Solvers.h"
+#include "../Shapes/Shapes.h"
 #include "../Solvers/MaxRectSolver.h"
 #include "../Solvers/SkylineSolver.h"
 #include "../Solvers/ShelfSolver.h"
@@ -29,10 +30,12 @@ public:
     float maxTime;
     /// Seed to seed the rng.
     int seed;
-    /// Best packing found by execute();
+    /// Evaluator to randomly sort by.
+    int (*evaluator)(const Rectangle &);
+    /// Best packing found by execute().
     Packing packed;
 
-    RectanglePacker(int _mask = 0, float _maxTime = 0, int _seed = 0);
+    RectanglePacker(int _mask = 0, float _maxTime = 0, int _seed = 0, int (*_evaluator)(const Rectangle&) = rectangleEvaluators::areaEvaluator);
     RectanglePacker(const RectanglePacker &other);
     ~RectanglePacker();
     /**

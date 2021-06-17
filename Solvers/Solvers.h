@@ -78,7 +78,7 @@ public:
      * @param shapesToSolveFor Rectangles to solve the problem for.
      * @param maxTime Maximal time given to the solver to solve.
      */
-    void solve(const std::vector<Rectangle> &shapesToSolveFor, const float maxTime);
+    void solve(const std::vector<Rectangle> &shapesToSolveFor, const float maxTime, int (*evaluator)(const Rectangle &));
     /**
      * Prints current packing in SVG format.
      * @param out Stream to print in.

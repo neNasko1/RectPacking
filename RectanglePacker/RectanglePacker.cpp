@@ -14,7 +14,7 @@
 
 namespace rectpack {
 
-RectanglePacker::RectanglePacker(int _mask, float _maxTime, int _seed) : shapes(), mask(_mask), maxTime(_maxTime), seed(_seed) {}
+RectanglePacker::RectanglePacker(int _mask, float _maxTime, int _seed, int (*_evaluator)(const Rectangle &)) : shapes(), mask(_mask), maxTime(_maxTime), seed(_seed), evaluator(_evaluator) {}
 RectanglePacker::RectanglePacker(const RectanglePacker &other) : shapes(other.shapes), bin(other.bin), mask(other.mask), maxTime(other.maxTime), seed(other.seed), packed(other.packed) {}
 
 RectanglePacker::~RectanglePacker() {}
@@ -37,6 +37,7 @@ void RectanglePacker::inputFromJSON(std::istream &in) {
     this->mask = json["Settings"]["Mask"].int_value();
     this->maxTime = json["Settings"]["MaxTime"].number_value();
     this->seed = json["Settings"]["Seed"].int_value();
+    this->evaluator = rectangleEvaluators::areaEvaluator;
 
     int ind = 0;
     for(const auto &shp : json["Shapes"].array_items()) {
@@ -61,19 +62,19 @@ void RectanglePacker::execute() {
     if(this->mask & 1) {
         std::cout << "Started skyline solver " << std::endl;
         SkylineSolver solver(this->bin);
-        solver.solve(this->shapes, this->maxTime);
+        solver.solve(this->shapes, this->maxTime, this->evaluator);
         this->packed.compareAndSwap(solver.packed);
     }
     if(this->mask & 2) {
         std::cout << "Started maxrect solver " << std::endl;
         MaxRectSolver solver(this->bin);
-        solver.solve(this->shapes, this->maxTime);
+        solver.solve(this->shapes, this->maxTime, this->evaluator);
         this->packed.compareAndSwap(solver.packed);
     }
     if(this->mask & 4) {
         std::cout << "Started shelf solver " << std::endl;
         ShelfSolver solver(this->bin);
-        solver.solve(this->shapes, this->maxTime);
+        solver.solve(this->shapes, this->maxTime, this->evaluator);
         this->packed.compareAndSwap(solver.packed);
     }
 }

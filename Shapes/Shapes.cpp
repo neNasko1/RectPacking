@@ -12,6 +12,10 @@ float Rectangle::getArea() const {
     return this->width * this->height;
 }
 
+float Rectangle::getPerimeter() const {
+    return (this->width + this->height) * 2.;
+}
+
 Rectangle Rectangle::flip() const {
     return Rectangle(this->height, this->width);
 }
@@ -61,5 +65,20 @@ void Box::printToSvg(std::ostream &out) const {
         << "\" style=\"fill:rgb(255, 255, 210, 255);stroke-width:0.3;stroke:rgb(0, 255, 0)\" />" << std::endl;
     out << "\t</g>";
 }
+
+namespace rectangleEvaluators {
+    int areaEvaluator(const Rectangle &rect) {
+        return rect.getArea();
+    }
+    int perimeterEvaluator(const Rectangle &rect) {
+        return rect.getPerimeter();
+    }
+    int widthEvaluator(const Rectangle &rect) {
+        return rect.width;
+    }
+    int heightEvaluator(const Rectangle &rect) {
+        return rect.height;
+    }
+};
 
 };

@@ -9,6 +9,7 @@
 #include "Solvers/MaxRectSolver.h"
 #include "Solvers/ShelfSolver.h"
 #include "RectanglePacker/RectanglePacker.h"
+#include "DataStructures/RandomSorter.tpp"
 
 #include <fstream>
 #include <random>

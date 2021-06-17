@@ -16,6 +16,7 @@ public:
     Rectangle(const Rectangle &other);
     ~Rectangle();
     float getArea() const;
+    float getPerimeter() const;
     Rectangle flip() const;
     void printToSvg(std::ostream &out) const;
 };
@@ -37,6 +38,13 @@ public:
 
 std::ostream &operator <<(std::ostream &out, const Box &box);
 bool areCollidingAABB(const Box &first, const Box &second);
+
+namespace rectangleEvaluators {
+    int areaEvaluator(const Rectangle &rect);
+    int perimeterEvaluator(const Rectangle &rect);
+    int widthEvaluator(const Rectangle &rect);
+    int heightEvaluator(const Rectangle &rect);
+};
 
 };
 
