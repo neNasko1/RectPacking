@@ -46,7 +46,7 @@ void SkylineSolver::pushBox(const Rectangle &rect, std::multiset<SkylineInterval
         if(iter->rightBorder <= leftBorder + rect.width) {
             auto copyIter = iter;
             fakeEmptySpaces.push_back(Box(currentLeftBorder, iter->height, iter->rightBorder - currentLeftBorder, -iter->height)); // Important - box is not real
-            bool equalityBreak = std::fabs(iter->rightBorder - leftBorder - rect.width) <= 1e-3; // If current rightBorder is the same as the rightBorder of iter we should break out.
+            bool equalityBreak = iter->rightBorder == leftBorder + rect.width; // If current rightBorder is the same as the rightBorder of iter we should break out.
 
             // Erase iter's interval from the skylineIntervalSet and move it to the right.
             currentLeftBorder = iter->rightBorder;

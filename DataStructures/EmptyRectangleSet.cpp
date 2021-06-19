@@ -39,14 +39,14 @@ void EmptyRectanglesSet::pushBox(const Box &shape) {
 
     for(const auto &shp : newEmptyRectangles) {
         if(shp.width > 0 && shp.height > 0) {
-            bool flag = true;
+            bool foundBigger = true;
             for(const auto &shpBigger : this->emptyRectangles) {
                 if(shpBigger.containsAABB(shp)) {
-                    flag = false;
+                    foundBigger = false;
                     break;
                 }
             }
-            if(flag) {
+            if(foundBigger) {
                 this->emptyRectangles.push_back(shp);
             }
         }
