@@ -17,7 +17,7 @@ void EmptyRectanglesSet::pushBox(const Box &shape) {
     Box shapeCopy;
     if(std::fabs(shape.angle) <= 1e-5) {
         shapeCopy = shape;
-    } else {
+    } else if (std::fabs(shape.angle - 90) <= 1e-5) {
         shapeCopy = Box(shape.x - shape.height, shape.y, shape.height, shape.width);
     }
     std::vector<Box> newEmptyRectangles;

@@ -78,7 +78,7 @@ void Solver::printToSvg(std::ostream &out) {
     out << "</svg>" << std::endl;
 }
 
-void Solver::solve(const std::vector<Rectangle> &shapesToSolveFor, const float maxTime, cordType (*evaluator)(const Rectangle &)) {
+void Solver::solve(const std::vector<Rectangle> &shapesToSolveFor, const float maxTime, unsigned long long (*evaluator)(const Rectangle &)) {
     auto copyShapesToSolveFor = shapesToSolveFor;
     auto beginClock = clock();
 

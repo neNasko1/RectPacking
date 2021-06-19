@@ -6,8 +6,8 @@
 
 namespace rectpack {
 
-typedef unsigned long long cordType;
-const cordType CORDTYPE_INFINITY = 0xffffffffffffffff;
+typedef long long cordType;
+const cordType CORDTYPE_INFINITY = 9223372036854775807;
 
 class Rectangle {
 public:
