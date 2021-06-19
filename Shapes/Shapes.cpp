@@ -2,18 +2,18 @@
 
 namespace rectpack {
 
-Rectangle::Rectangle(const float _width, const float _height, const int _data) :
+Rectangle::Rectangle(const cordType _width, const cordType _height, const int _data) :
     width(_width), height(_height), placed(false), data(_data) {}
 
 Rectangle::Rectangle(const Rectangle &other) :
     width(other.width), height(other.height), placed(other.placed), data(other.data) {}
 
-float Rectangle::getArea() const {
+cordType Rectangle::getArea() const {
     return this->width * this->height;
 }
 
-float Rectangle::getPerimeter() const {
-    return (this->width + this->height) * 2.;
+cordType Rectangle::getPerimeter() const {
+    return (this->width + this->height) * 2;
 }
 
 Rectangle Rectangle::flip() const {
@@ -32,10 +32,10 @@ void Rectangle::printToSvg(std::ostream &out) const {
         << "\" style=\"fill:rgb(255, 255, 255);stroke-width:1;stroke:rgb(0, 0, 0)\" />" << std::endl;
 }
 
-Box::Box(const float _x, const float _y, const float _width, const float _height, const float _angle, const int _data) :
+Box::Box(const cordType _x, const cordType _y, const cordType _width, const cordType _height, const float _angle, const int _data) :
     Rectangle(_width, _height, _data), x(_x), y(_y), angle(_angle) {}
 
-Box::Box(const float _x, const float _y, const Rectangle &_rect, const float _angle) :
+Box::Box(const cordType _x, const cordType _y, const Rectangle &_rect, const float _angle) :
     Rectangle(_rect), x(_x), y(_y), angle(_angle) {}
 
 Box::Box(const Box &other) :
@@ -67,17 +67,17 @@ void Box::printToSvg(std::ostream &out) const {
 }
 
 namespace rectangleEvaluators {
-    int areaEvaluator(const Rectangle &rect) {
-        return rect.getArea();
+    unsigned long long areaEvaluator(const Rectangle &rect) {
+        return (unsigned long long)rect.getArea();
     }
-    int perimeterEvaluator(const Rectangle &rect) {
-        return rect.getPerimeter();
+    unsigned long long perimeterEvaluator(const Rectangle &rect) {
+        return (unsigned long long)rect.getPerimeter();
     }
-    int widthEvaluator(const Rectangle &rect) {
-        return rect.width;
+    unsigned long long widthEvaluator(const Rectangle &rect) {
+        return (unsigned long long)rect.width;
     }
-    int heightEvaluator(const Rectangle &rect) {
-        return rect.height;
+    unsigned long long heightEvaluator(const Rectangle &rect) {
+        return (unsigned long long)rect.height;
     }
 };
 
