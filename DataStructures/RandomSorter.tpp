@@ -6,19 +6,22 @@
 #include <algorithm>
 
 #include "RandomSorter.h"
+#include "../Shapes/Shapes.h"
 
 template<class RandomIterator, class T>
-void randomSort(const RandomIterator begin, const RandomIterator end, int (*evaluator)(T)) {
+void randomSort(const RandomIterator begin, const RandomIterator end, unsigned long long (*evaluator)(T)) {
     //Utility to generate 32 bit random integer
-    auto randUINT = []() -> unsigned int {
-        return ((unsigned int)rand() << (unsigned int)16) + (unsigned int)rand();
+    auto randULL = []() -> unsigned long long {
+        using ull = unsigned long long;
+        ull ret = ((ull)rand() << (ull)48) + ((ull)rand() << (ull)32) + ((ull)rand() << (ull)16) + (ull)rand();
+        return ret;
     };
 
     // Generate and sort value-index pairs
     std::vector<std::pair<unsigned int, int> > valueIndexPairs;
     for(auto it = begin; it != end; it ++) {
         int evaluatedValue = evaluator(*it);
-        valueIndexPairs.push_back({randUINT() % evaluatedValue, it - begin});
+        valueIndexPairs.push_back({randULL() % evaluatedValue, it - begin});
     }
     std::sort(valueIndexPairs.begin(), valueIndexPairs.end());
 

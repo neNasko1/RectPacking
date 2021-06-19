@@ -12,15 +12,13 @@
 
 namespace rectpack {
 
-Packing::Packing() {}
-
-Packing::Packing(const std::vector<Box> &_shapes) {
-    this->shapes = _shapes;
+Packing::Packing() : score(0), shapes()  {}
+Packing::Packing(const std::vector<Box> &_shapes) : score(0), shapes(_shapes) {
     for(const auto &shp : _shapes) {
         this->score += shp.getArea();
     }
 }
-Packing::Packing(const Packing &other) {this->score = other.score; this->shapes = other.shapes;}
+Packing::Packing(const Packing &other) : score(other.score), shapes(other.shapes) {}
 
 Packing::~Packing() {}
 
@@ -80,7 +78,7 @@ void Solver::printToSvg(std::ostream &out) {
     out << "</svg>" << std::endl;
 }
 
-void Solver::solve(const std::vector<Rectangle> &shapesToSolveFor, const float maxTime, int (*evaluator)(const Rectangle &)) {
+void Solver::solve(const std::vector<Rectangle> &shapesToSolveFor, const float maxTime, unsigned long long (*evaluator)(const Rectangle &)) {
     auto copyShapesToSolveFor = shapesToSolveFor;
     auto beginClock = clock();
 

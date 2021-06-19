@@ -14,7 +14,7 @@ SkylineSolver::SkylineSolver(const Rectangle &_bin) : Solver(_bin), skylineInter
 
 SkylineSolver::SkylineInterval::SkylineInterval() : rightBorder(0), height(0) {}
 
-SkylineSolver::SkylineInterval::SkylineInterval(const float _rightBorder, const float _height) : rightBorder(_rightBorder), height(_height) {}
+SkylineSolver::SkylineInterval::SkylineInterval(const cordType _rightBorder, const cordType _height) : rightBorder(_rightBorder), height(_height) {}
 
 SkylineSolver::~SkylineSolver() {}
 
@@ -22,8 +22,8 @@ bool SkylineSolver::SkylineInterval::operator <(const SkylineInterval &other) co
     return this->rightBorder < other.rightBorder;
 }
 
-float SkylineSolver::getLeftBorder(std::multiset<SkylineInterval>::iterator &firstIterator) {
-    float leftBorder;
+cordType SkylineSolver::getLeftBorder(std::multiset<SkylineInterval>::iterator &firstIterator) {
+    cordType leftBorder;
     if(firstIterator == this->skylineIntervalSet.begin()) {
         leftBorder = 0;
     } else {
@@ -35,8 +35,8 @@ float SkylineSolver::getLeftBorder(std::multiset<SkylineInterval>::iterator &fir
 }
 
 void SkylineSolver::pushBox(const Rectangle &rect, std::multiset<SkylineInterval>::iterator &bestIntervalIterator) {
-    float leftBorder = this->getLeftBorder(bestIntervalIterator);
-    float height = 0, currentLeftBorder = leftBorder;
+    cordType leftBorder = this->getLeftBorder(bestIntervalIterator);
+    cordType height = 0, currentLeftBorder = leftBorder;
 
     // Doesn't represent actual empty spaces, but an abstract box with negative height, so we can figure out the real height in the end
     std::vector<Box> fakeEmptySpaces;
@@ -46,7 +46,7 @@ void SkylineSolver::pushBox(const Rectangle &rect, std::multiset<SkylineInterval
         if(iter->rightBorder <= leftBorder + rect.width) {
             auto copyIter = iter;
             fakeEmptySpaces.push_back(Box(currentLeftBorder, iter->height, iter->rightBorder - currentLeftBorder, -iter->height)); // Important - box is not real
-            bool equalityBreak = std::fabs(iter->rightBorder - leftBorder - rect.width) <= 1e-3; // If current rightBorder is the same as the rightBorder of iter we should break out.
+            bool equalityBreak = iter->rightBorder == leftBorder + rect.width; // If current rightBorder is the same as the rightBorder of iter we should break out.
 
             // Erase iter's interval from the skylineIntervalSet and move it to the right.
             currentLeftBorder = iter->rightBorder;
@@ -73,13 +73,13 @@ void SkylineSolver::pushBox(const Rectangle &rect, std::multiset<SkylineInterval
 }
 
 std::multiset<SkylineSolver::SkylineInterval>::iterator SkylineSolver::findBest(const Rectangle &rect, Box &ret) {
-    float currentLeftBorder = 0;
+    cordType currentLeftBorder = 0;
     auto leftPointer = this->skylineIntervalSet.begin(), rightPointer = this->skylineIntervalSet.begin();
 
-    std::multiset<float> heights; float heightSum = 0;
+    std::multiset<cordType> heights; cordType heightSum = 0;
     heights.insert(leftPointer->height);
 
-    float minWaste = 1e9;
+    cordType minWaste = CORDTYPE_INFINITY;
     auto retIterator = this->skylineIntervalSet.end();
 
     // Finds out which intervals are going to be under a rectangle if you put its left border to be the same as the left border of leftPointer.
@@ -88,7 +88,7 @@ std::multiset<SkylineSolver::SkylineInterval>::iterator SkylineSolver::findBest(
     while(leftPointer != this->skylineIntervalSet.end() && currentLeftBorder + rect.width <= this->bin.width) {
         // Moving rightPointer accordingly.
         while(rightPointer->rightBorder < currentLeftBorder + rect.width) {
-            float rightPointerLeftBorder = rightPointer->rightBorder;
+            cordType rightPointerLeftBorder = rightPointer->rightBorder;
             rightPointer ++;
             if(rightPointer == this->skylineIntervalSet.end()) {break;}
             heights.insert(rightPointer->height);
@@ -100,9 +100,9 @@ std::multiset<SkylineSolver::SkylineInterval>::iterator SkylineSolver::findBest(
         if(rightPointer == this->skylineIntervalSet.end()) {break;}
 
         // Finds out the height of the highest interval between leftPointer and rightPointer.
-        float extractedMax = *(heights.rbegin());
+        cordType extractedMax = *(heights.rbegin());
         // Current waste is a rough estimate of the wasted area by this choice
-        float currentWaste = extractedMax * (rightPointer->rightBorder - currentLeftBorder) - heightSum;
+        cordType currentWaste = extractedMax * (rightPointer->rightBorder - currentLeftBorder) - heightSum;
 
         // If currentWaste is smaller than minWaste change return value.
         if(currentWaste < minWaste && extractedMax + rect.height <= this->bin.height) {

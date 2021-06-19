@@ -19,7 +19,7 @@ namespace rectpack {
 class Packing {
 public:
     /// Sum of the areas of the boxes in this packing.
-    float score;
+    cordType score;
     /// Boxes in the packing
     std::vector<Box> shapes;
 
@@ -78,7 +78,7 @@ public:
      * @param shapesToSolveFor Rectangles to solve the problem for.
      * @param maxTime Maximal time given to the solver to solve.
      */
-    void solve(const std::vector<Rectangle> &shapesToSolveFor, const float maxTime, int (*evaluator)(const Rectangle &));
+    void solve(const std::vector<Rectangle> &shapesToSolveFor, const float maxTime, unsigned long long (*evaluator)(const Rectangle &));
     /**
      * Prints current packing in SVG format.
      * @param out Stream to print in.

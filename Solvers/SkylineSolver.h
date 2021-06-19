@@ -24,11 +24,11 @@ private:
     class SkylineInterval {
     public:
         /// Right border of interval in the x axis.
-        float rightBorder;
+        cordType rightBorder;
         /// Height of interval in the y axis.
-        float height;
+        cordType height;
         SkylineInterval();
-        SkylineInterval(const float _rightBorder, const float _height);
+        SkylineInterval(const cordType _rightBorder, const cordType _height);
         /**
          * < Operator overloading for SkylineIntervals sorting by right border.
          */
@@ -43,7 +43,7 @@ private:
      * @param firstIterator Set iterator to the interval.
      * @return Left border in the x axis.
      */
-    float getLeftBorder(std::multiset<SkylineInterval>::iterator &firstIterator);
+    cordType getLeftBorder(std::multiset<SkylineInterval>::iterator &firstIterator);
     /**
      * Finds best interval to put rectangle on top of.
      * @param rect Rectangle to search for.

@@ -14,8 +14,8 @@
 
 namespace rectpack {
 
-RectanglePacker::RectanglePacker(int _mask, float _maxTime, int _seed, int (*_evaluator)(const Rectangle &)) : shapes(), mask(_mask), maxTime(_maxTime), seed(_seed), evaluator(_evaluator) {}
-RectanglePacker::RectanglePacker(const RectanglePacker &other) : shapes(other.shapes), bin(other.bin), mask(other.mask), maxTime(other.maxTime), seed(other.seed), packed(other.packed) {}
+RectanglePacker::RectanglePacker(Rectangle _bin, int _mask, float _maxTime, int _seed, unsigned long long (*_evaluator)(const Rectangle &)) : shapes(), bin(_bin), mask(_mask), maxTime(_maxTime), seed(_seed), evaluator(_evaluator), packed() {}
+RectanglePacker::RectanglePacker(const RectanglePacker &other) : shapes(other.shapes), bin(other.bin), mask(other.mask), maxTime(other.maxTime), seed(other.seed), evaluator(other.evaluator), packed(other.packed) {}
 
 RectanglePacker::~RectanglePacker() {}
 
@@ -41,7 +41,7 @@ void RectanglePacker::inputFromJSON(std::istream &in) {
 
     int ind = 0;
     for(const auto &shp : json["Shapes"].array_items()) {
-        float w = shp["W"].number_value(), h = shp["H"].number_value(); int count = shp["Count"].int_value();
+        cordType w = shp["W"].number_value(), h = shp["H"].number_value(); int count = shp["Count"].int_value();
         ind ++;
         for(int i = 0; i < count; i ++) {
             this->shapes.push_back(Rectangle(w, h, ind));

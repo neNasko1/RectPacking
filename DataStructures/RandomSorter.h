@@ -9,6 +9,6 @@
  * @param evaluator Function which evaluates the elements.
  */
 template<class RandomIterator, class T>
-void randomSort(const RandomIterator begin, const RandomIterator end, int (*evaluator)(T));
+void randomSort(const RandomIterator begin, const RandomIterator end, unsigned long long (*evaluator)(T));
 
 #endif // RANDOMSORTER_H

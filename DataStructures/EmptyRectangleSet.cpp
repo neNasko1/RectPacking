@@ -17,7 +17,7 @@ void EmptyRectanglesSet::pushBox(const Box &shape) {
     Box shapeCopy;
     if(std::fabs(shape.angle) <= 1e-5) {
         shapeCopy = shape;
-    } else {
+    } else if (std::fabs(shape.angle - 90) <= 1e-5) {
         shapeCopy = Box(shape.x - shape.height, shape.y, shape.height, shape.width);
     }
     std::vector<Box> newEmptyRectangles;
@@ -39,14 +39,14 @@ void EmptyRectanglesSet::pushBox(const Box &shape) {
 
     for(const auto &shp : newEmptyRectangles) {
         if(shp.width > 0 && shp.height > 0) {
-            bool flag = true;
+            bool foundBigger = true;
             for(const auto &shpBigger : this->emptyRectangles) {
                 if(shpBigger.containsAABB(shp)) {
-                    flag = false;
+                    foundBigger = false;
                     break;
                 }
             }
-            if(flag) {
+            if(foundBigger) {
                 this->emptyRectangles.push_back(shp);
             }
         }
@@ -63,11 +63,11 @@ void EmptyRectanglesSet::clear() {
 }
 
 bool EmptyRectanglesSet::findBest(const Rectangle &rect, Box &ret) {
-    float minWaste = 1e9;
+    cordType minWaste = CORDTYPE_INFINITY;
     bool flag = false;
     for(const auto &emp : this->emptyRectangles) {
         if(emp.width >= rect.width && emp.height >= rect.height) {
-            float currentWaste = (emp.width - rect.width) * (emp.height) + (emp.height - rect.height) * (emp.width);
+            cordType currentWaste = (emp.width - rect.width) * (emp.height) + (emp.height - rect.height) * (emp.width);
             if(currentWaste < minWaste) {
                 minWaste = currentWaste;
                 ret = Box(emp.x, emp.y, rect, 0);
@@ -76,7 +76,7 @@ bool EmptyRectanglesSet::findBest(const Rectangle &rect, Box &ret) {
         }
 
         if(emp.width >= rect.height && emp.height >= rect.width) {
-            float currentWaste = (emp.width - rect.height) * (emp.height) + (emp.height - rect.width) * (emp.width);
+            cordType currentWaste = (emp.width - rect.height) * (emp.height) + (emp.height - rect.width) * (emp.width);
             if(currentWaste < minWaste) {
                 minWaste = currentWaste;
                 ret = Box(emp.x + rect.height, emp.y, rect, 90);
@@ -89,22 +89,23 @@ bool EmptyRectanglesSet::findBest(const Rectangle &rect, Box &ret) {
 
 bool EmptyRectanglesSet::findBestRotation(const Rectangle &rect, Box &ret, Box &boundingBox) {
     const float INCREMENT = 0.01, PI = 3.14159265;
-    float minWaste = 1e9;
+    cordType minWaste = CORDTYPE_INFINITY;
     bool flag = false;
     for(float angle = 0; angle < PI * 2; angle += INCREMENT) {
 
         float transformWidthxDelta = rect.width * cos(angle), transformWidthyDelta = rect.width * sin(angle);
         float transformHeightxDelta = rect.height * cos(angle + PI / 2.), transformHeightyDelta = rect.height * sin(angle + PI / 2.);
 
-        float AABBleftx  = std::min(std::min(0.f, transformWidthxDelta), std::min(transformHeightxDelta, transformWidthxDelta + transformHeightxDelta));
-        float AABBrightx = std::max(std::max(0.f, transformWidthxDelta), std::max(transformHeightxDelta, transformWidthxDelta + transformHeightxDelta));
-        float AABBdowny  = std::min(std::min(0.f, transformWidthyDelta), std::min(transformHeightyDelta, transformWidthyDelta + transformHeightyDelta));
-        float AABBupy    = std::max(std::max(0.f, transformWidthyDelta), std::max(transformHeightyDelta, transformWidthyDelta + transformHeightyDelta));
+        // Add 2 pixel margin, so you don't have accidental collisions.
+        cordType AABBleftx  = std::min(std::min(0.f, transformWidthxDelta), std::min(transformHeightxDelta, transformWidthxDelta + transformHeightxDelta)) - 1;
+        cordType AABBrightx = std::max(std::max(0.f, transformWidthxDelta), std::max(transformHeightxDelta, transformWidthxDelta + transformHeightxDelta)) + 1;
+        cordType AABBdowny  = std::min(std::min(0.f, transformWidthyDelta), std::min(transformHeightyDelta, transformWidthyDelta + transformHeightyDelta)) - 1;
+        cordType AABBupy    = std::max(std::max(0.f, transformWidthyDelta), std::max(transformHeightyDelta, transformWidthyDelta + transformHeightyDelta)) + 1;
 
         Rectangle transformRect(AABBrightx - AABBleftx, AABBupy - AABBdowny);
         Box nowRet;
         if(this->findBest(transformRect, nowRet)) {
-            float currentWaste = transformRect.getArea() - rect.getArea();
+            cordType currentWaste = transformRect.getArea() - rect.getArea();
             if(minWaste > currentWaste) {
                 minWaste = currentWaste;
                 boundingBox = nowRet;

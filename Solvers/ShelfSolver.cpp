@@ -15,8 +15,8 @@ void ShelfSolver::solveForPermutation(std::vector<Rectangle> &shapesToSolveFor, 
 
     // Pushes rectangles row by row.
 
-    float currentx = 0, currenty = 0;
-    float highestInRow = 0;
+    cordType currentx = 0, currenty = 0;
+    cordType highestInRow = 0;
     auto beginClock = clock();
 
     do {

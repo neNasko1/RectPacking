@@ -31,11 +31,11 @@ public:
     /// Seed to seed the rng.
     int seed;
     /// Evaluator to randomly sort by.
-    int (*evaluator)(const Rectangle &);
+    unsigned long long (*evaluator)(const Rectangle &);
     /// Best packing found by execute().
     Packing packed;
 
-    RectanglePacker(int _mask = 0, float _maxTime = 0, int _seed = 0, int (*_evaluator)(const Rectangle&) = rectangleEvaluators::areaEvaluator);
+    RectanglePacker(Rectangle _bin = Rectangle(0, 0), int _mask = 0, float _maxTime = 0, int _seed = 0, unsigned long long (*_evaluator)(const Rectangle&) = rectangleEvaluators::areaEvaluator);
     RectanglePacker(const RectanglePacker &other);
     ~RectanglePacker();
     /**
