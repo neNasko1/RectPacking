@@ -33,10 +33,6 @@ namespace testinglib {
 
     bool boundingBoxAreCollidingAABB(const Box &a, const Box &b) {
         auto bba = boundingBox(a), bbb = boundingBox(b);
-        if(areCollidingAABB(bba, bbb)) {
-            std::cout << a << " " << b << std::endl;
-            std::cout << bba << " " << bbb << " " << areCollidingAABB(bba, bbb) << std::endl;
-        }
         return areCollidingAABB(bba, bbb);
     }
 
@@ -44,15 +40,14 @@ namespace testinglib {
         for(int i = 0; (size_t)i < packed.shapes.size(); i ++) {
             for(int j = i + 1; (size_t)j < packed.shapes.size(); j ++) {
                 if(boundingBoxAreCollidingAABB(packed.shapes[i], packed.shapes[j])) {
-                    std::cout << packed.shapes[i] << " " << packed.shapes[j] << std::endl;
-                    return true;
+                    return false;
                 }
             }
             if(!Box(0, 0, 200, 200, 0).containsAABB(boundingBox(packed.shapes[i]))) {
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     void stressTest(const float maxTime) {
@@ -73,7 +68,7 @@ namespace testinglib {
             std::ofstream outstream; outstream.open("rect.svg");
             rectPackerToTest.outputToSvg(outstream);
             outstream.close();
-            if(okPacking(rectPackerToTest.packed)) {
+            if(!okPacking(rectPackerToTest.packed)) {
                 std::cout << "Test was not passed " << std::endl;
                 std::cout << "Bin 200 200; Seed " << cnt << "; Mask " << rectPackerToTest.mask << std::endl;
                 for(const auto &it : currentInput) {
