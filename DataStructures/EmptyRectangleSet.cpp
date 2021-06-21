@@ -8,7 +8,7 @@ namespace rectpack {
 
 EmptyRectanglesSet::EmptyRectanglesSet() : emptyRectangles(), fullBin() {}
 
-EmptyRectanglesSet::EmptyRectanglesSet(const Box &_rect) : emptyRectangles(), fullBin(_rect) {}
+EmptyRectanglesSet::EmptyRectanglesSet(const Box &_rect) : emptyRectangles(), fullBin(_rect) {this->clear();}
 
 EmptyRectanglesSet::~EmptyRectanglesSet() {}
 
@@ -17,7 +17,7 @@ void EmptyRectanglesSet::pushBox(const Box &shape) {
     Box shapeCopy;
     if(std::fabs(shape.angle) <= 1e-5) {
         shapeCopy = shape;
-    } else if (std::fabs(shape.angle - 90) <= 1e-5) {
+    } else if (std::fabs(shape.angle - 90) <= 1e-4) {
         shapeCopy = Box(shape.x - shape.height, shape.y, shape.height, shape.width);
     }
     std::vector<Box> newEmptyRectangles;
@@ -53,8 +53,8 @@ void EmptyRectanglesSet::pushBox(const Box &shape) {
     }
 }
 
-void EmptyRectanglesSet::pushEmpty(const Box &emptRect) {
-    this->emptyRectangles.push_back(emptRect);
+void EmptyRectanglesSet::pushEmpty(const Box &emptyRect) {
+    this->emptyRectangles.push_back(emptyRect);
 }
 
 void EmptyRectanglesSet::clear() {
@@ -93,14 +93,14 @@ bool EmptyRectanglesSet::findBestRotation(const Rectangle &rect, Box &ret, Box &
     bool flag = false;
     for(float angle = 0; angle < PI * 2; angle += INCREMENT) {
 
-        float transformWidthxDelta = rect.width * cos(angle), transformWidthyDelta = rect.width * sin(angle);
-        float transformHeightxDelta = rect.height * cos(angle + PI / 2.), transformHeightyDelta = rect.height * sin(angle + PI / 2.);
+        float transformWidthxDelta = (float)rect.width * cos(angle), transformWidthyDelta = (float)rect.width * sin(angle);
+        float transformHeightxDelta = (float)rect.height * cos(angle + PI / 2.), transformHeightyDelta = (float)rect.height * sin(angle + PI / 2.);
 
         // Add 2 pixel margin, so you don't have accidental collisions.
-        cordType AABBleftx  = std::min(std::min(0.f, transformWidthxDelta), std::min(transformHeightxDelta, transformWidthxDelta + transformHeightxDelta)) - 1;
-        cordType AABBrightx = std::max(std::max(0.f, transformWidthxDelta), std::max(transformHeightxDelta, transformWidthxDelta + transformHeightxDelta)) + 1;
-        cordType AABBdowny  = std::min(std::min(0.f, transformWidthyDelta), std::min(transformHeightyDelta, transformWidthyDelta + transformHeightyDelta)) - 1;
-        cordType AABBupy    = std::max(std::max(0.f, transformWidthyDelta), std::max(transformHeightyDelta, transformWidthyDelta + transformHeightyDelta)) + 1;
+        cordType AABBleftx  = (std::min(std::min(0.f, transformWidthxDelta), std::min(transformHeightxDelta, transformWidthxDelta + transformHeightxDelta)) + 0.5) - 1;
+        cordType AABBrightx = (std::max(std::max(0.f, transformWidthxDelta), std::max(transformHeightxDelta, transformWidthxDelta + transformHeightxDelta)) + 0.5) + 1;
+        cordType AABBdowny  = (std::min(std::min(0.f, transformWidthyDelta), std::min(transformHeightyDelta, transformWidthyDelta + transformHeightyDelta)) + 0.5) - 1;
+        cordType AABBupy    = (std::max(std::max(0.f, transformWidthyDelta), std::max(transformHeightyDelta, transformWidthyDelta + transformHeightyDelta)) + 0.5) + 1;
 
         Rectangle transformRect(AABBrightx - AABBleftx, AABBupy - AABBdowny);
         Box nowRet;

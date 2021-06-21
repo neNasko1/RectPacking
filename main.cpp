@@ -3,6 +3,8 @@
 #include <vector>
 #include <time.h>
 #include <algorithm>
+#include <fstream>
+#include <random>
 
 #include "Shapes/Shapes.h"
 #include "Solvers/SkylineSolver.h"
@@ -10,11 +12,13 @@
 #include "Solvers/ShelfSolver.h"
 #include "RectanglePacker/RectanglePacker.h"
 #include "DataStructures/RandomSorter.tpp"
+#include "TestingUtils/TestingUtils.h"
 
-#include <fstream>
-#include <random>
 
 int main() {
+    rectpack::stressTest(1000000);
+    return 0;
+
     rectpack::RectanglePacker rp;
 
     std::ifstream in("input.json");

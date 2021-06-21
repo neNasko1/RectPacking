@@ -16,10 +16,6 @@ cordType Rectangle::getPerimeter() const {
     return (this->width + this->height) * 2;
 }
 
-Rectangle Rectangle::flip() const {
-    return Rectangle(this->height, this->width);
-}
-
 Rectangle::~Rectangle() {}
 
 std::ostream &operator <<(std::ostream &out, const Rectangle &rect) {
@@ -50,13 +46,13 @@ bool Box::containsAABB(const Box &other) const {
 }
 
 std::ostream &operator <<(std::ostream &out, const Box &box) {
-    out << "[" << box.x << " " << box.y << ", " << box.width << " " << box.height << " " << box.data << "]";
+    out << "[" << box.x << " " << box.y << ", " << box.width << " " << box.height << " " << box.angle << ", " << box.data << "]";
     return out;
 }
 
 bool areCollidingAABB(const Box &first, const Box &second) {
-    return (first.x <= second.x +  second.width && first.x +  first.width >= second.x) &&
-           (first.y <= second.y + second.height && first.y + first.height >= second.y);
+    return (first.x < second.x +  second.width && first.x +  first.width > second.x) &&
+           (first.y < second.y + second.height && first.y + first.height > second.y);
 }
 
 void Box::printToSvg(std::ostream &out) const {

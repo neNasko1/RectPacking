@@ -14,8 +14,10 @@
 
 namespace rectpack {
 
-RectanglePacker::RectanglePacker(Rectangle _bin, int _mask, float _maxTime, int _seed, unsigned long long (*_evaluator)(const Rectangle &)) : shapes(), bin(_bin), mask(_mask), maxTime(_maxTime), seed(_seed), evaluator(_evaluator), packed() {}
-RectanglePacker::RectanglePacker(const RectanglePacker &other) : shapes(other.shapes), bin(other.bin), mask(other.mask), maxTime(other.maxTime), seed(other.seed), evaluator(other.evaluator), packed(other.packed) {}
+RectanglePacker::RectanglePacker(Rectangle _bin, int _mask, float _maxTime, int _seed, unsigned long long (*_evaluator)(const Rectangle &))
+    : shapes(), bin(_bin), mask(_mask), maxTime(_maxTime), seed(_seed), evaluator(_evaluator), packed() {}
+RectanglePacker::RectanglePacker(const RectanglePacker &other)
+    : shapes(other.shapes), bin(other.bin), mask(other.mask), maxTime(other.maxTime), seed(other.seed), evaluator(other.evaluator), packed(other.packed) {}
 
 RectanglePacker::~RectanglePacker() {}
 
@@ -37,7 +39,21 @@ void RectanglePacker::inputFromJSON(std::istream &in) {
     this->mask = json["Settings"]["Mask"].int_value();
     this->maxTime = json["Settings"]["MaxTime"].number_value();
     this->seed = json["Settings"]["Seed"].int_value();
-    this->evaluator = rectangleEvaluators::areaEvaluator;
+
+    std::string evaluatorName = json["Settings"]["Evaluator"].string_value();
+    if(evaluatorName == "Area") {
+        this->evaluator = rectangleEvaluators::areaEvaluator;
+    } else if(evaluatorName == "Perimeter") {
+        this->evaluator = rectangleEvaluators::perimeterEvaluator;
+    } else if(evaluatorName == "Width") {
+        this->evaluator = rectangleEvaluators::widthEvaluator;
+    } else if(evaluatorName == "Height") {
+        this->evaluator = rectangleEvaluators::heightEvaluator;
+    } else {
+        std::cout << "No evaluator name specified. Using areaEvaluator instead." << std::endl;
+        this->evaluator = rectangleEvaluators::areaEvaluator;
+    }
+
 
     int ind = 0;
     for(const auto &shp : json["Shapes"].array_items()) {
@@ -47,13 +63,6 @@ void RectanglePacker::inputFromJSON(std::istream &in) {
             this->shapes.push_back(Rectangle(w, h, ind));
         }
     }
-
-    std::cout << "Read from stream" << std::endl;
-    std::cout << this->bin << " " << this->mask << " " << this->maxTime << " " << std::endl;
-    for(const auto &shp : this->shapes) {
-        std::cout << shp << "; ";
-    }
-    std::cout << std::endl;
 }
 
 //Main function which calculates the best packing
