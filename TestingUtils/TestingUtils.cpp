@@ -8,6 +8,7 @@
 #include "../Shapes/Shapes.h"
 
 namespace rectpack {
+namespace testinglib {
     float toRad(float deg) {
         return deg * 3.14159265 / 180.;
     }
@@ -39,13 +40,16 @@ namespace rectpack {
         return areCollidingAABB(bba, bbb);
     }
 
-    bool intersectingPair(const Packing &packed) {
+    bool okPacking(const Packing &packed) {
         for(int i = 0; (size_t)i < packed.shapes.size(); i ++) {
             for(int j = i + 1; (size_t)j < packed.shapes.size(); j ++) {
                 if(boundingBoxAreCollidingAABB(packed.shapes[i], packed.shapes[j])) {
                     std::cout << packed.shapes[i] << " " << packed.shapes[j] << std::endl;
                     return true;
                 }
+            }
+            if(!Box(0, 0, 200, 200, 0).containsAABB(boundingBox(packed.shapes[i]))) {
+                return false;
             }
         }
         return false;
@@ -56,7 +60,7 @@ namespace rectpack {
         int cnt = 0;
         while(clock() - beginClock < maxTime) {
             cnt ++;
-            RectanglePacker rectPackerToTest(Rectangle(200, 200), 7, 3000, cnt);
+            RectanglePacker rectPackerToTest(Rectangle(200, 200), rand() % 8, 3000, cnt);
             std::vector<std::pair<Rectangle, int> > currentInput;
             for(int i = 0; i < 10; i ++) {
                 int w = rand() % 20 + 10, h = rand() % 20 + 10;
@@ -69,16 +73,17 @@ namespace rectpack {
             std::ofstream outstream; outstream.open("rect.svg");
             rectPackerToTest.outputToSvg(outstream);
             outstream.close();
-            if(intersectingPair(rectPackerToTest.packed)) {
+            if(okPacking(rectPackerToTest.packed)) {
                 std::cout << "Test was not passed " << std::endl;
-                std::cout << "Bin 200 200; Seed " << cnt << std::endl;
+                std::cout << "Bin 200 200; Seed " << cnt << "; Mask " << rectPackerToTest.mask << std::endl;
                 for(const auto &it : currentInput) {
                     std::cout << "{\"W\":" << it.first.width << ", \"H\":" << it.first.height << ", \"Count\":" << it.second << "}, ";
                 }
                 return;
             } else {
-                std::cout << "Test passed" << std::endl;
+                std::cout << "Test passed " << rectPackerToTest.mask << " " << rectPackerToTest.packed.score  << std::endl;
             }
         }
     }
+}
 }

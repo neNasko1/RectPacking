@@ -16,7 +16,7 @@
 
 
 int main() {
-    rectpack::stressTest(1000000);
+    rectpack::testinglib::stressTest(1000000);
     return 0;
 
     rectpack::RectanglePacker rp;
