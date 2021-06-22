@@ -16,9 +16,6 @@
 
 
 int main() {
-    rectpack::testinglib::stressTest(1000000);
-    return 0;
-
     rectpack::RectanglePacker rp;
 
     std::ifstream in("input.json");

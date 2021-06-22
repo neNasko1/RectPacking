@@ -51,24 +51,36 @@ namespace testinglib {
     }
 
     void stressTest(const float maxTime) {
+        // Stress testing is done by packing random rectangles into a (200, 200) bin
         auto beginClock = clock();
         int cnt = 0;
         while(clock() - beginClock < maxTime) {
             cnt ++;
             RectanglePacker rectPackerToTest(Rectangle(200, 200), rand() % 8, 3000, cnt);
             std::vector<std::pair<Rectangle, int> > currentInput;
-            for(int i = 0; i < 10; i ++) {
-                int w = rand() % 20 + 10, h = rand() % 20 + 10;
-                currentInput.push_back({Rectangle(w, h), 30});
-                for(int j = 0; j < 30; j ++) {
-                    rectPackerToTest.shapes.push_back(Rectangle(w, h));
+            if(rand() & 1) { // Generate a big number of shapes with small sizes.
+                for(int i = 0; i < 10; i ++) {
+                    int w = rand() % 20 + 10, h = rand() % 20 + 10;
+                    currentInput.push_back({Rectangle(w, h), 30});
+                    for(int j = 0; j < 30; j ++) {
+                        rectPackerToTest.shapes.push_back(Rectangle(w, h, i));
+                    }
+                }
+            } else { // Generate a small number of shapes with big sizes.
+                for(int i = 0; i < 10; i ++) {
+                    int w = rand() % 40 + 20, h = rand() % 40 + 20;
+                    currentInput.push_back({Rectangle(w, h), 10});
+                    for(int j = 0; j < 10; j ++) {
+                        rectPackerToTest.shapes.push_back(Rectangle(w, h, i));
+                    }
                 }
             }
+            // Write current packing into a file for later inspection.
             rectPackerToTest.execute();
-            std::ofstream outstream; outstream.open("rect.svg");
+            std::ofstream outstream; outstream.open("testerrect.svg");
             rectPackerToTest.outputToSvg(outstream);
             outstream.close();
-            if(!okPacking(rectPackerToTest.packed)) {
+            if(!okPacking(rectPackerToTest.packed)) { // If the packing is invalid, output the test for which we got the wrong answer.
                 std::cout << "Test was not passed " << std::endl;
                 std::cout << "Bin 200 200; Seed " << cnt << "; Mask " << rectPackerToTest.mask << std::endl;
                 for(const auto &it : currentInput) {
@@ -76,7 +88,7 @@ namespace testinglib {
                 }
                 return;
             } else {
-                std::cout << "Test passed " << rectPackerToTest.mask << " " << rectPackerToTest.packed.score  << std::endl;
+                std::cout << "Test passed " << cnt << ": " << rectPackerToTest.packed.score  << std::endl;
             }
         }
     }
