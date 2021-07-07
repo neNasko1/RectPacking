@@ -18,9 +18,9 @@ void randomSort(const RandomIterator begin, const RandomIterator end, unsigned l
     };
 
     // Generate and sort value-index pairs
-    std::vector<std::pair<unsigned int, int> > valueIndexPairs;
+    std::vector<std::pair<unsigned long long, int> > valueIndexPairs;
     for(auto it = begin; it != end; it ++) {
-        int evaluatedValue = evaluator(*it);
+        unsigned long long evaluatedValue = evaluator(*it);
         valueIndexPairs.push_back({randULL() % evaluatedValue, it - begin});
     }
     std::sort(valueIndexPairs.begin(), valueIndexPairs.end());
