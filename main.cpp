@@ -30,7 +30,3 @@ int main() {
 
     return 0;
 }
-
-/*
-Probabilistic sorter - optimizes the answers given by the algorithm
-*/

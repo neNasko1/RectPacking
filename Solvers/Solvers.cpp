@@ -83,12 +83,12 @@ void Solver::solve(const std::vector<Rectangle> &shapesToSolveFor, const float m
     auto beginClock = clock();
 
     // Shuffles until there is no time left
-    while(maxTime - (clock() - beginClock) > 0) {
+    while((clock() - beginClock) / CLOCKS_PER_SEC < maxTime) {
         randomSort(copyShapesToSolveFor.begin(), copyShapesToSolveFor.end(), evaluator);
         // We want the biggest to be picked first.
         reverse(copyShapesToSolveFor.begin(), copyShapesToSolveFor.end());
 
-        this->solveForPermutation(copyShapesToSolveFor, maxTime - (clock() - beginClock));
+        this->solveForPermutation(copyShapesToSolveFor, maxTime - (clock() - beginClock) / CLOCKS_PER_SEC);
         if(this->packed.compareAndSwap(this->buffer)) {
             std::cout << this->packed.score << std::endl;
         }

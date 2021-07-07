@@ -22,7 +22,7 @@ void ShelfSolver::solveForPermutation(std::vector<Rectangle> &shapesToSolveFor, 
     do {
         highestInRow = 0;
         currentx = 0;
-        for(auto &shp : shapesToSolveFor) if(!shp.placed && clock() - beginClock < maxTime) {
+        for(auto &shp : shapesToSolveFor) if(!shp.placed && (clock() - beginClock) / CLOCKS_PER_SEC < maxTime) {
             if(this->bin.width - currentx >= shp.width && this->bin.height - currenty >= shp.height) {
                 highestInRow = std::max(highestInRow, shp.height);
                 shp.placed = true;
@@ -31,7 +31,7 @@ void ShelfSolver::solveForPermutation(std::vector<Rectangle> &shapesToSolveFor, 
             }
         }
         currenty += highestInRow;
-    } while(highestInRow != 0 && clock() - beginClock < maxTime);
+    } while(highestInRow != 0 && (clock() - beginClock) / CLOCKS_PER_SEC < maxTime);
 }
 
 };

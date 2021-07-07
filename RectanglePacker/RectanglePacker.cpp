@@ -54,7 +54,6 @@ void RectanglePacker::inputFromJSON(std::istream &in) {
         this->evaluator = rectangleEvaluators::areaEvaluator;
     }
 
-
     int ind = 0;
     for(const auto &shp : json["Shapes"].array_items()) {
         cordType w = shp["W"].number_value(), h = shp["H"].number_value(); int count = shp["Count"].int_value();

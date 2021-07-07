@@ -19,7 +19,7 @@ void MaxRectSolver::solveForPermutation(std::vector<Rectangle> &shapesToSolveFor
     auto beginClock = clock();
 
     // Search for a place to put each rectangle on - only using the empty spaces in emptySpacesSet.
-    for(auto &shp : shapesToSolveFor) if(clock() - beginClock < maxTime) {
+    for(auto &shp : shapesToSolveFor) if((clock() - beginClock) / CLOCKS_PER_SEC < maxTime) {
         Box shapePlace;
         if(this->emptySpacesSet.findBest(shp, shapePlace)) {
             this->buffer.push_back(shapePlace);
@@ -29,7 +29,7 @@ void MaxRectSolver::solveForPermutation(std::vector<Rectangle> &shapesToSolveFor
     }
 
     // Search for a place to put each rectangle on(using rotations) - only using the empty spaces in emptySpacesSet.
-    for(auto &shp : shapesToSolveFor) if(clock() - beginClock < maxTime && !shp.placed) {
+    for(auto &shp : shapesToSolveFor) if((clock() - beginClock) / CLOCKS_PER_SEC < maxTime && !shp.placed) {
         Box shapePlace, boundingBox;
         if(this->emptySpacesSet.findBestRotation(shp, shapePlace, boundingBox)) {
             this->buffer.push_back(shapePlace);
